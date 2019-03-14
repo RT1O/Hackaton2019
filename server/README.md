@@ -1,1 +1,8 @@
-# Hakatons 2019
+# Express.js Server | Hackathon 2019
+
+## Setup
+
+```bash
+npm install
+npm run start
+```
