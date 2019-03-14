@@ -7,7 +7,6 @@ const app = express();
 
 const parsedCsv = {};
 const csvOptions = {
-  delimiter: ';',
   trim: true,
   relax: true,
   columns: true
@@ -23,11 +22,11 @@ fs.readdirSync(__dirname + '/data')
         parsedCsv[filename].push(row);
       })
       .on('end', () => {
-        console.log(parsedCsv);
-        console.log(filename);
+        // console.log(parsedCsv);
+        // console.log(filename);
       })
       .on('error', (e) => {
-        console.error(e);
+        // console.error(e);
       });
   });
 
