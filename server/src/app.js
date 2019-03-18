@@ -22,7 +22,7 @@ fs.readdirSync(__dirname + '/data')
         parsedCsv[filename].push(row);
       })
       .on('end', () => {
-        // console.log(parsedCsv);
+        console.log(parsedCsv);
         // console.log(filename);
       })
       .on('error', (e) => {
@@ -32,14 +32,18 @@ fs.readdirSync(__dirname + '/data')
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.get('/', (req, res) => {
   res.json(parsedCsv);
 });
 
 app.get('/chart/:chart', (req, res) => {
-  res.json(
-    parsedCsv[req.paramas.chart]
-  );
+  res.json(parsedCsv[req.params.chart]);
 });
 
 app.listen(8081, () => {
