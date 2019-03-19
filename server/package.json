@@ -1,51 +1,16 @@
 {
-  "name": "hackaton2019",
+  "name": "olimps3d-hackathon-server",
   "version": "1.0.0",
-  "description": "A project made for use in the https://lata.org.lv hackaton.",
-  "main": "app.js",
+  "description": "",
+  "main": "src/app.js",
   "scripts": {
-    "dev": "nodemon ./src/app.js",
-    "start": "node ./src/app.js"
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RT1O/Hackaton2019.git"
-  },
-  "keywords": [
-    "hackaton",
-    "node.js",
-    "js",
-    "webapp"
-  ],
-  "author": "Toms Zvirbulis & Juris Ozoliņš",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/RT1O/Hackaton2019/issues"
-  },
-  "homepage": "https://github.com/RT1O/Hackaton2019#readme",
   "dependencies": {
-    "@doweb/vuexpress": "^1.1.2",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "cors": "^2.8.5",
-    "css-loader": "^2.1.1",
-    "csv": "^5.1.1",
-    "csv-parser": "^2.2.0",
-    "express": "^4.16.4",
-    "jade": "^1.11.0",
-    "node-sass": "^4.11.0",
-    "postcss-loader": "^3.0.0",
-    "sass-loader": "^7.1.0",
-    "sequelize": "^4.43.0",
-    "sqlite3": "^4.0.6",
-    "vue": "^2.6.8",
-    "vue-loader": "^15.7.0",
-    "vue-template-compiler": "^2.6.8",
-    "vuex": "^3.1.0",
-    "webpack": "^4.29.6",
-    "webpack-merge": "^4.2.1",
-    "webpack-node-externals": "^1.7.2"
+    "csv-parse": "^4.3.4",
+    "express": "^4.16.4"
   }
 }

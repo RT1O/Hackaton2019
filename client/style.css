@@ -1,0 +1,17 @@
+body {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.row {
+  padding-top: 20px;
+}
+
+.card {
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+  margin: 0 auto;
+}
