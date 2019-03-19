@@ -6,3 +6,12 @@ body {
 .row {
   padding-top: 20px;
 }
+
+.card {
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+  margin: 0 auto;
+}

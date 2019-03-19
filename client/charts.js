@@ -2,8 +2,11 @@
 // ceru ka sapratīsi kā tālāk izdarīt, lai ievietot jaunus
 // grafikus.
 
+const API_BASE_URL = "http://localhost:8081";
+
 // The colors of the charts, the loop through the provided ones.
 const defaultColors = {
+  // RGBA format (RED, GREEN, BLUE, APLHA(transparency 0.0 - 1.0)).
   borders: [
     'rgba(255, 0, 0, 0.6)',
     'rgba(0, 255, 0, 0.6)',
@@ -164,10 +167,10 @@ function createCharts() {
   charts.forEach((chart) => {
     $('#' + chart.id)
       .append('<div></div>', '<canvas></canvas>')
-    $('#' + chart.id + '.div')
-      .html('<p>Loading...</p>');
+    $('#' + chart.id + ' div')
+      .html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
     $.ajax({
-        url: 'http://localhost:8081/chart/' + chart.source,
+        url: API_BASE_URL + '/chart/' + chart.source,
         method: 'GET',
         dataType: 'json',
         success: (result) => {
