@@ -11,24 +11,28 @@ const csvOptions = {
   relax: true,
   columns: true
 }
+let csvAmt = 0;
 
 fs.readdirSync(__dirname + '/data')
   .forEach((file) => {
     const filename = file.split('.')[0];
     parsedCsv[filename] = [];
+    csvAmt++;
     fs.createReadStream(__dirname + '/data/' + file)
       .pipe(csvParse(csvOptions))
       .on('data', (row) => {
         parsedCsv[filename].push(row);
       })
       .on('end', () => {
-        console.log(parsedCsv);
+        // console.log(parsedCsv);
         // console.log(filename);
       })
       .on('error', (e) => {
         // console.error(e);
       });
   });
+
+console.log('Loaded ' + csvAmt + ' .csv(s)');
 
 app.use(bodyParser.json());
 
