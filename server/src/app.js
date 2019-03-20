@@ -28,7 +28,7 @@ fs.readdirSync(__dirname + '/data')
         // console.log(filename);
       })
       .on('error', (e) => {
-        // console.error(e);
+        console.error(e);
       });
   });
 

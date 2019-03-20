@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <head>
-  <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <title>Homepage | Olimps3D</title>
+  <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="./leaflet//leaflet.css" rel="stylesheet" type="text/css">
   <link href="./style.css" rel="stylesheet" type="text/css">
   <script
-  src="./js/bootstrap.min.js"></script>
+  src="./bootstrap/js/bootstrap.min.js"></script>
   <script
   src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
   <script
   src="http://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
+  <script
+  src="./leaflet/leaflet.js"></script>
+  <script
+  src="./latvia-map.js">
+  </script>
 </head>
 
 <!--
@@ -39,38 +46,45 @@
 -->
 
 <body>
-  <div class="container">
-    <div class="center">
-      <a href="https://www.csb.gov.lv/lv/statistika/db">
-        Links uz datiem
-      </a>
+  <div class="container main-container">
+    <div class="row">
+      <div class="col mt-auto mb-auto chart-col text-center">
+        <div id="GZG070"></div>
+      </div>
     </div>
     <div class="row">
-      <div class="col">
-        <div class="card">
-          <div id="GZG070" class="card-body"></div>
-        </div>
+      <div class="col chart-col text-center">
+        <div id="ISG010-0"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col chart-col text-center">
+        <div id="ISG010-1"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col chart-col text-center">
+        <div id="DSG001"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col chart-col text-center">
+        <div id="MAJDZIVNIEKI-0"></div>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <div class="card">
-          <div id="ISG010" class="card-body"></div>
-        </div>
+        <div id="map" class="leaflet-map"></div>
       </div>
     </div>
     <div class="row">
-      <div class="col">
-        <div class="card">
-          <div id="DSG001" class="card-body"></div>
-        </div>
+      <div class="col text-center">
+        <p>Empty Footer</p>
       </div>
-    </div>
-    <div class="center">
-      Veidoja Toms Zvirbulis & Juris Ozoliņš
     </div>
   </div>
 </body>
 
 <script src="./charts.js"></script>
+<script src="./maps.js"></script>
 </html>
