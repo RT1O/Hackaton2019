@@ -1,13 +1,12 @@
 const MAPBOX_TOKEN = 'pk.eyJ1IjoicnQxbyIsImEiOiJjanRoN2Rwb24wZm1nM3lwNjRjOWlmaGlkIn0.KQ0vUQXa5yDTCq9QF7siPA';
+const LATVIA_COORDS = [56.946285, 24.105078]
 const MAP_ZOOM = 7;
 
 const map = L.map('map', { zoomControl: false })
-  .setView([56.946285, 24.105078], MAP_ZOOM);
+  .setView(LATVIA_COORDS, MAP_ZOOM);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + MAPBOX_TOKEN, {
-  id: 'mapbox.light',
-  minZoom: MAP_ZOOM,
-  maxZoom: MAP_ZOOM
+  id: 'mapbox.light', minZoom: MAP_ZOOM, maxZoom: MAP_ZOOM
 }).addTo(map);
 
 let geojson;
@@ -54,6 +53,5 @@ function onEachFeature(feature, layer) {
 }
 
 geojson = L.geoJson(pilsetas, {
-  style: style,
-  onEachFeature: onEachFeature
+  style: style, onEachFeature: onEachFeature
 }).addTo(map);
