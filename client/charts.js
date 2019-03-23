@@ -5,19 +5,12 @@
 const API_BASE_URL = "http://localhost:8081";
 
 // The colors of the charts, the loop through the provided ones.
-const defaultColors = {
-  // RGBA format (RED, GREEN, BLUE, APLHA(transparency 0.0 - 1.0)).
-  borders: [
-    'rgba(255, 0, 0, 0.6)',
-    'rgba(0, 255, 0, 0.6)',
-    'rgba(0, 0, 255, 0.6)'
-  ],
-  backgrounds: [
-    'rgba(255, 0, 0, 0.2)',
-    'rgba(0, 255, 0, 0.2)',
-    'rgba(0, 0, 255, 0.2)'
-  ]
-}
+const defaultColors = [
+  // RGBA (RED, GREEN, BLUE, APLHA(transparency 0.0 - 1.0)).
+  'rgb(0, 49, 66)',
+  'rgb(201, 209, 0)',
+  'rgb(214, 89, 167)'
+]
 
 /* GRAFIKA PIEMĒRS:
 const chart = {
@@ -47,6 +40,7 @@ const charts = [
   {
     id: 'GZG070',
     source: 'GZG070',
+    type: 'line',
     data: [
       {
         label: 'Faktiski',
@@ -58,12 +52,12 @@ const charts = [
       }
     ],
     options: {
-      borderWidth: 1
+      fill: false
     },
     amount: 10
   },
   {
-    id: 'ISG010',
+    id: 'ISG010-0',
     source: 'ISG010',
     type: 'line',
     data: [
@@ -78,9 +72,28 @@ const charts = [
     amount: 30
   },
   {
+    id: 'ISG010-1',
+    source: 'ISG010',
+    type: 'bar',
+    data: [
+      {
+        label: 'Noslēgto laulību skaits',
+        key: 'Noslēgto laulību skaits'
+      },
+      {
+        label: 'Šķirto laulību skaits',
+        key: 'Šķirto laulību skaits'
+      }
+    ],
+    options: {
+      fill: false
+    },
+    amount: 30
+  },
+  {
     id: 'DSG001',
     source: 'DSG001',
-    type: 'line',
+    type: 'bar',
     data: [
       {
         label: 'Minimālā mēnešalga',
@@ -89,13 +102,93 @@ const charts = [
     ],
     options: {
       fill: false
-    }
+    },
+    amount: 20
+  },
+  {
+    id: 'MAJDZIVNIEKI-0',
+    source: 'majdzivnieki_pa_novadiem',
+    type: 'doughnut',
+    rows: true,
+    excludes: [
+      'Kopā'
+    ],
+    data: [
+      {
+        label: 'Mājdzīvnieki latvijā',
+        row: 'Latvijā kopā'
+      }
+    ],
+    axis: false
   }
 ]
 
 // \/\/\/\/\/\/\/\/\/\/\/\/\/
 // Only functions below here.
 // /\/\/\/\/\/\/\/\/\/\/\/\/\
+
+function getFirstKey(object) {
+  return Object.keys(object)[0];
+}
+
+function getFirstKeyValue(object) {
+  return object[getFirstKey(object)];
+}
+
+function getChartLabels(data, chart) {
+  if (!chart.rows)
+    return data.map((a) => {
+      return getFirstKeyValue(a);
+    });
+  return Object.keys(data[0])
+    .filter((a) => {
+      return !chart.excludes.includes(a)
+        && a != getFirstKey(data[0]);
+    });
+}
+
+function getDatasetData(data, chart, dataset) {
+  if (!chart.rows)
+    return data.map((a) => {
+      return parseInt(a[dataset.key]);
+    });
+  let _data = [];
+  let datasetData = null;
+  for (let i = 0; i < data.length; i++) {
+    if (getFirstKeyValue(data[i]) == dataset.row) {
+      datasetData = data[i]; break;
+    }
+  }
+  Object.keys(datasetData)
+    .forEach((key) => {
+      console.log(key);
+      if (!chart.excludes.includes(key)
+        && key != getFirstKey(datasetData))
+        _data.push(datasetData[key]);
+    });
+  return _data;
+}
+
+function getColors(chart, index = 0) {
+  let colors;
+  if (!chart.rows) {
+    colors = defaultColors[index % defaultColors.length];
+  } else {
+    colors = defaultColors.map((color) => {
+      return color;
+    }).concat(colors);
+  }
+  return {
+    borderColor: colors,
+    backgroundColor: colors
+  };
+}
+
+function getChartOptions(chart) {
+  return {
+
+  };
+}
 
 function renderChart(ctx, data, chart) {
   if (chart.amount > 0) {
@@ -105,31 +198,26 @@ function renderChart(ctx, data, chart) {
       console.log('An error occured while slicing the data: ', err.message);
     }
   }
-  const chartLabels = data.map((x) => {
-    return x[Object.keys(x)[0]];
+  const chartLabels = getChartLabels(data, chart);
+  const chartData = chart.data.map((dataset, index) => {
+    return Object.assign({}, dataset.options, chart.options, getColors(chart, index),
+      {
+        label: dataset.label,
+        data: getDatasetData(data, chart, dataset)
+      });
   });
-  const chartData = chart.data.map((x, i) => {
-    return Object.assign({}, chart.options || {}, x.options || {}, {
-      label: x.label,
-      data: data.map((a) => {
-        return parseInt(a[x.key]);
-      }),
-      borderColor: (x.color != null
-        ? x.color[1]
-        : defaultColors.borders[i % defaultColors.borders.length]),
-      backgroundColor: (x.color != null
-        ? x.color[0]
-        : defaultColors.backgrounds[i % defaultColors.backgrounds.length]),
-    });
-  });
+  const noGridLines = ['pie', 'doughnut'];
+  const xGridLines = (noGridLines.includes(chart.type) ? false : false);
+  const yGridLines = (noGridLines.includes(chart.type) ? false : true);
   new Chart(ctx, {
     type: chart.type || 'bar',
     data: {
       labels: chartLabels,
       datasets: chartData
     },
-    options: {
+    options: { // getChartOptions(chart)
       responsive: true,
+      /*
       tooltips: {
         mode: 'index',
         intersect: false
@@ -138,21 +226,24 @@ function renderChart(ctx, data, chart) {
         mode: 'nearest',
         intersect: false
       },
+      */
+      elements: {
+        point: {
+          radius: 3
+        }
+      },
       scales: {
         xAxes: [
           {
-            display: true,
-            scaleLabel: {
-              display: true
+            display: xGridLines,
+            gridLines: {
+              display: false
             }
           }
         ],
         yAxes: [
           {
-            display: true,
-            scaleLabel: {
-              display: true
-            },
+            display: yGridLines,
             ticks: {
               beginAtZero: chart.atZero || false
             }
@@ -166,22 +257,24 @@ function renderChart(ctx, data, chart) {
 function createCharts() {
   charts.forEach((chart) => {
     $('#' + chart.id)
-      .append('<div></div>', '<canvas></canvas>')
-    $('#' + chart.id + ' div')
+      .append('<p></p>')
+    $('#' + chart.id + ' p')
       .html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
     $.ajax({
         url: API_BASE_URL + '/chart/' + chart.source,
         method: 'GET',
         dataType: 'json',
         success: (result) => {
-          $('#' + chart.id + ' div')
+          $('#' + chart.id + ' p')
             .html('');
+          $('#' + chart.id)
+            .append('<canvas></canvas>');
           renderChart($('#' + chart.id + ' canvas'), result, chart);
         },
         error: (err) => {
           console.log(err);
-          $('#' + chart.id)
-            .html('<p>An error occured.</p>');
+          // $('#' + chart.id + ' p')
+          //   .html('<p>An error occured.</p>');
         }
       });
   });

@@ -47,32 +47,15 @@
 
 <body>
   <div class="container main-container">
-    <a href="./game.html">
-      Uz spēli...
+    <a href="./index.html">
+      Uz sākumu...
     </a>
     <div class="row">
-      <div class="col mt-auto mb-auto chart-col text-center">
-        <div id="GZG070"></div>
+      <div class="col text-center">
+        <p>Punkti: <span id="game-score">0</span></p>
       </div>
-    </div>
-    <div class="row">
-      <div class="col chart-col text-center">
-        <div id="ISG010-0"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col chart-col text-center">
-        <div id="ISG010-1"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col chart-col text-center">
-        <div id="DSG001"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col chart-col text-center">
-        <div id="MAJDZIVNIEKI-0"></div>
+      <div class="col text-center">
+        <p>Gājiens: <span id="game-turn">1</span></p>
       </div>
     </div>
     <div class="row">
@@ -80,13 +63,7 @@
         <div id="map" class="leaflet-map"></div>
       </div>
     </div>
-    <div class="row">
-      <div class="col text-center">
-        <p>Empty Footer</p>
-      </div>
-    </div>
   </div>
 </body>
-<script src="./charts.js"></script>
-<script src="./maps.js"></script>
+<script src="./game.js"></script>
 </html>

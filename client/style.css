@@ -3,10 +3,6 @@ body {
   margin: 0 auto;
 }
 
-.row {
-  padding-top: 20px;
-}
-
 .card {
   text-align: center;
 }
@@ -14,4 +10,12 @@ body {
 .center {
   text-align: center;
   margin: 0 auto;
+}
+
+.card .card-body {
+  margin: 0;
+}
+
+.leaflet-map {
+  height: 500px;
 }
