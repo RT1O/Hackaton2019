@@ -1,4 +1,4 @@
-# Olimps3D @ OpendataHackathon2019
+# Olimps 3D @ OpendataHackathon2019
 
 ## How to run the server:
 
