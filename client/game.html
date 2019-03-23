@@ -2,10 +2,8 @@
 <head>
   <title>Homepage | Olimps3D</title>
   <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-  <link href="./leaflet//leaflet.css" rel="stylesheet" type="text/css">
+  <link href="./leaflet/leaflet.css" rel="stylesheet" type="text/css">
   <link href="./style.css" rel="stylesheet" type="text/css">
-  <script
-  src="./bootstrap/js/bootstrap.min.js"></script>
   <script
   src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
   <script
@@ -13,9 +11,11 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
   <script
+  src="./bootstrap/js/bootstrap.min.js"></script>
+  <script
   src="./leaflet/leaflet.js"></script>
   <script
-  src="./latvia-map.js">
+  src="./js/latvia-map-data.js">
   </script>
 </head>
 
@@ -46,6 +46,26 @@
 -->
 
 <body>
+  <div class="modal fade" id="novada-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+	  <div class="modal-content">
+	    <div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel"><span id="novada-name">Undefined</span> Novads</h5>
+		  <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button> -->
+		</div>
+		<div class="modal-body">
+		  <span id="novada-question"></span>
+		  <hr>
+	      <button type="button" class="btn btn-primary btn-lg btn-block"><span id="novada-answer-0"></span></button>
+		  <button type="button" class="btn btn-secondary btn-lg btn-block"><span id="novada-answer-1"></span></button>
+		  <button type="button" class="btn btn-secondary btn-lg btn-block"><span id="novada-answer-2"></span></button>
+		  <button type="button" class="btn btn-secondary btn-lg btn-block"><span id="novada-answer-3"></span></button>
+		</div>
+	  </div>
+	</div>
+  </div>
   <div class="container main-container">
     <a href="./index.html">
       Uz sākumu...
@@ -65,5 +85,5 @@
     </div>
   </div>
 </body>
-<script src="./game.js"></script>
+<script src="./js/game.js"></script>
 </html>

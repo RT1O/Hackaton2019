@@ -3,19 +3,6 @@ body {
   margin: 0 auto;
 }
 
-.card {
-  text-align: center;
-}
-
-.center {
-  text-align: center;
-  margin: 0 auto;
-}
-
-.card .card-body {
-  margin: 0;
-}
-
 .leaflet-map {
-  height: 500px;
+  height: 600px;
 }

@@ -2,7 +2,7 @@
 // ceru ka sapratīsi kā tālāk izdarīt, lai ievietot jaunus
 // grafikus.
 
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = "http://84.237.212.146:8081";
 
 // The colors of the charts, the loop through the provided ones.
 const defaultColors = [
@@ -57,8 +57,8 @@ const charts = [
     amount: 10
   },
   {
-    id: 'ISG010-0',
-    source: 'ISG010',
+    id: 'IEDZIVOTAJI-SKAITS',
+    source: 'iedzīvotāji',
     type: 'line',
     data: [
       {
@@ -72,8 +72,8 @@ const charts = [
     amount: 30
   },
   {
-    id: 'ISG010-1',
-    source: 'ISG010',
+    id: 'IEDZIVOTAJI-LAULIBAS',
+    source: 'iedzīvotāji',
     type: 'bar',
     data: [
       {
@@ -91,8 +91,8 @@ const charts = [
     amount: 30
   },
   {
-    id: 'DSG001',
-    source: 'DSG001',
+    id: 'MINIMALA-ALGA',
+    source: 'minimālā_mēnešalga',
     type: 'bar',
     data: [
       {
@@ -106,7 +106,7 @@ const charts = [
     amount: 20
   },
   {
-    id: 'MAJDZIVNIEKI-0',
+    id: 'MAJDZIVNIEKI',
     source: 'majdzivnieki_pa_novadiem',
     type: 'doughnut',
     rows: true,
