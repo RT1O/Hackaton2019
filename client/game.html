@@ -87,4 +87,9 @@
   </div>
 </body>
 <script src="./js/game_manager.js"></script>
+<script>
+$(window).bind("beforeunload", () => {
+  return "Vai tu esi pārliecināts ka gribi iziet?";
+});
+</script>
 </html>
