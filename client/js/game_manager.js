@@ -1,3 +1,7 @@
+const questions = {
+
+}
+
 function getMap(coordinates, zoom, token) {
   const map = L.map('game-map').setView(coordinates, zoom);
   L.tileLayer('https://api.mapbox.com/styles/v1/rt1o/cjtijj0di2p881fp5d8n8gs27/tiles/{z}/{x}/{y}?access_token=' + token, {
