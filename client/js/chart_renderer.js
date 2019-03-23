@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8081';
+const API_BASE_URL = config.host || "http://localhost:8081";
 const defaultColors = [
   'rgb(0, 49, 66)',
   'rgb(201, 209, 0)',
