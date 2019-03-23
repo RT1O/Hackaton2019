@@ -16,6 +16,6 @@ npm install
 npm run start
 ```
 
-## How to run the site:
+## Kā palaist saiti:
 
-Navigate to the `client` directory, then open the `index.html` file.
+Pārvietojaties uz `client` mapi un atveriet `index.html` failu.
