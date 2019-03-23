@@ -57,4 +57,4 @@ function setGeoJson(map, data) {
   return geoJson;
 }
 
-setGeoJson(map, novadi);
+setGeoJson(map, konturas);

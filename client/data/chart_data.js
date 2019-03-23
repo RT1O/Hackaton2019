@@ -33,5 +33,16 @@ const charts = [
         key: 'Mirstība'
       }
     ]
+  },
+  {
+    id: 'majdzivnieki-latvija',
+    source: 'majdzivnieki_ldatvija',
+    type: 'pie',
+    data: [
+      {
+        label: 'Mājdzīvnieki Latvijā',
+        key: 'Mājdzīvnieki'
+      }
+    ]
   }
 ];

@@ -34,10 +34,12 @@ function setGeoJson(map, data) {
   function highlightFeature(e) {
     let layer = e.target;
 
-    layer.setStyle({
-      weight: 4,
-      fillOpacity: 1.0
-    });
+    if (layer.feature.properties.diff > 0 && !layer.feature.properties.completed) {
+      layer.setStyle({
+        weight: 4,
+        fillOpacity: 1.0
+      });
+    }
 
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
       layer.bringToFront();
@@ -49,22 +51,24 @@ function setGeoJson(map, data) {
 
   function clickEvent(e) {
     const properties = e.target.feature.properties;
-    const id = properties.id.substr(1);
 
-    let name = id.charAt(0).toUpperCase() + id.substr(1);
+    if (properties.diff > 0 && !properties.completed) {
+      const id = properties.id.substr(1);
+      let name = id.charAt(0).toUpperCase() + id.substr(1);
 
-    $('#novada-modal').modal('show');
+      $('#novada-modal').modal('show');
 
-    if (properties.id.charAt(0) == 'n')
-      name += ' Novads';
+      if (properties.id.charAt(0) == 'n')
+        name += ' Novads';
 
-    $('#novada-name').text(name);
+      $('#novada-name').text(name);
 
-    $('#novada-question')
-      .text('Tukšs jautājums.');
+      $('#novada-question')
+        .text('Tukšs jautājums.');
 
-    for (let i = 0; i < 4; i++) {
-      $('#novada-answer-' + i).text('Atbilde ' + (i + 1));
+      for (let i = 0; i < 4; i++) {
+        $('#novada-answer-' + i).text('Atbilde ' + (i + 1));
+      }
     }
   }
 
@@ -100,8 +104,12 @@ function shuffle(a) {
 
 function generateDifficulty(values) {
   const set = [0, 0, 0];
-  const final = shuffle(novadi.features.map((f) => {
-    f.properties.diff = 0;
+  const final = shuffle(konturas.features.map((f) => {
+    if (f.properties.id != 'priga') {
+      f.properties.diff = 0;
+    } else {
+      f.properties.diff = Math.ceil(Math.random() * 2) + 1;
+    }
     f.properties.completed = false;
     return f;
   }));
@@ -121,11 +129,13 @@ function generateDifficulty(values) {
     }
   }
 
+  /*
   for (var i = 0; i < final.length; i++) {
     if (final[i].properties.diff > 0) {
       final[i].properties.completed = (Math.floor(Math.random() * 100) > 80 ? true : false);
     }
   }
+  */
 
   return final;
 }

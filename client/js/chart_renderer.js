@@ -131,8 +131,13 @@ function createCharts() {
   charts.forEach((chart) => {
     $('#' + chart.id)
       .append('<p></p>')
+    // please ignore this one : ^) (vertical alignment is pain)
     $('#' + chart.id + ' p')
-      .html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
+      .html(
+      '<div class="pt-5 chart-spinner-container d-flex justify-content-center">' +
+      '<div class="mt-4"><div class="mt-5 chart-spinner spinner-border align-middle text-dark" role="status">' +
+      '<span class="sr-only align-middle">Loading...</span>' +
+      '</div></div></div>');
     $.ajax({
       url: API_BASE_URL + '/chart/' + chart.source,
       method: 'GET',

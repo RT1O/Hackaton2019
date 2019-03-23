@@ -26,8 +26,8 @@
   Nepiciešamie dati:
   -->
   <script src="./data/latvia_data.js"></script>
+  <script src="./data/game_data.js"></script>
 </head>
-
 
 <body>
   <div class="modal fade" id="novada-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -39,10 +39,10 @@
         <div class="modal-body">
 		      <span id="novada-question"></span>
 		      <hr>
-          <button type="button" class="btn btn-primary btn-lg btn-block"><span id="novada-answer-0"></span></button>
-		      <button type="button" class="btn btn-secondary btn-lg btn-block"><span id="novada-answer-1"></span></button>
-		      <button type="button" class="btn btn-secondary btn-lg btn-block"><span id="novada-answer-2"></span></button>
-		      <button type="button" class="btn btn-secondary btn-lg btn-block"><span id="novada-answer-3"></span></button>
+          <button type="button" class="btn btn-light btn-lg btn-block"><span id="novada-answer-0"></span></button>
+		      <button type="button" class="btn btn-light btn-lg btn-block"><span id="novada-answer-1"></span></button>
+		      <button type="button" class="btn btn-light btn-lg btn-block"><span id="novada-answer-2"></span></button>
+		      <button type="button" class="btn btn-light btn-lg btn-block"><span id="novada-answer-3"></span></button>
 		    </div>
 	    </div>
 	  </div>
@@ -58,27 +58,36 @@
         <div class="card-group">
           <div class="card">
             <div class="card-body text-center">
-              <h5 class="card-title">Tavi Punkti</h5>
-              <p id='game-points' class="card-text">1000</p>
+              <h5 class="card-title">Punkti</h5>
+              <p id='game-points' class="card-text">0</p>
             </div>
           </div>
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">Gājiens</h5>
-              <p id='game-points' class="card-text">1/5</p>
+              <p id='game-points' class="card-text">1/30</p>
             </div>
           </div>
         </div>
       </div>
+
       <div class="col-12">
-        <div id="game-map" class="game-map border rounded mt-4"></div>
+        <div class="mt-4 alert alert-warning alert-dismissable" role="alert">
+          Pagaidām <strong>nav iespējams</strong> atbildēt uz jautājumiem. <!-- <strong>izņemot</strong> - Rīgā, Liepājā un Daugavpilī. -->
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="game-map" class="mt-4 game-map border rounded"></div>
       </div>
     </div>
 
     <div class="row pt-3 text-center">
       <div class="col">
         <hr>
-        <p>2019 &copy; Olimps 3D | Veidoja
+        <p>
+          <a href="https://lata.org.lv/skolas2019">Latvijas Skolu Atvērto Datu Hakatons 2019</a>
+          @ Olimps 3D | Veidoja
           <a href="https://github.com/RT1O/">Toms Zvirbulis</a> &
           <a href="https://github.com/RedBricc">Juris Ozoliņš</a>
         </p>

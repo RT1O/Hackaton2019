@@ -47,7 +47,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/chart/:chart', (req, res) => {
-  res.json(parsedCsv[req.params.chart]);
+  try {
+    res.json(parsedCsv[req.params.chart]);
+  } catch(err) {
+    res.statusCode(404);
+  }
 });
 
 app.listen(8081, () => {
