@@ -1,9 +1,3 @@
-const novadaViktorina = {
-  daugavpils: {
-	question: 'Specifisks jautājums priekš Daugavpils.'
-  }
-}
-
 function getMap(coordinates, zoom, token) {
   const map = L.map('map').setView(coordinates, zoom);
   L.tileLayer('https://api.mapbox.com/styles/v1/rt1o/cjtijj0di2p881fp5d8n8gs27/tiles/{z}/{x}/{y}?access_token=' + token, {
@@ -50,20 +44,24 @@ function setGeoJson(map, data) {
   }
 
   function clickEvent(e) {
-	const properties = e.target.feature.properties;
-	const id = properties.id.substr(1);
-	// alert("ID: " + properties.id + " (" + properties.diff + ")");
-	
-	$('#novada-modal').modal('show');
-	$('#novada-name')
-	  .text(id.charAt(0).toUpperCase() + id.substr(1));
-  
-	$('#novada-question')
-	  .text('Tukšs jautājums.');
-	  
-	for (let i = 0; i < 4; i++) {
-	  $('#novada-answer-' + i).text('Atbilde ' + (i + 1));
-	}
+    const properties = e.target.feature.properties;
+    const id = properties.id.substr(1);
+
+    let name = id.charAt(0).toUpperCase() + id.substr(1);
+
+    $('#novada-modal').modal('show');
+
+    if (properties.id.charAt(0) == 'n')
+      name += ' Novads';
+
+    $('#novada-name').text(name);
+
+    $('#novada-question')
+      .text('Tukšs jautājums.');
+
+    for (let i = 0; i < 4; i++) {
+      $('#novada-answer-' + i).text('Atbilde ' + (i + 1));
+    }
   }
 
   function onEachFeature(feature, layer) {

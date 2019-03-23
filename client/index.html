@@ -1,185 +1,81 @@
 <!DOCTYPE html>
 <head>
-  <title>Homepage | Olimps3D</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Toms Zvirbulis & Juris Ozoliņš">
+  <meta name="description" content="Olimps 3D - Atvērto Datu Hakatons 2019">
+
+  <title>Infografiks | Olimps 3D</title>
+
+  <!--
+  Nepiciešamie stili:
+  -->
   <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-  <link href="./leaflet//leaflet.css" rel="stylesheet" type="text/css">
+  <link href="./leaflet/leaflet.css" rel="stylesheet" type="text/css">
   <link href="./style.css" rel="stylesheet" type="text/css">
-  <script
-  src="./bootstrap/js/bootstrap.min.js"></script>
-  <script
-  src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
-  <script
-  src="http://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
-  <script
-  src="./leaflet/leaflet.js"></script>
-  <script
-  src="./js/latvia-map-data.js">
-  </script>
+
+  <!--
+  Nepieciešamais JavaScript:
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="./bootstrap/js/bootstrap.min.js"></script>
+  <script src="./leaflet/leaflet.js"></script>
+
+  <!--
+  Nepiciešamie dati:
+  -->
+  <script src="./data/chart_data.js"></script>
+  <script src="./data/latvia_data.js"></script>
 </head>
 
-<!--
-
-  Lai pievienotu jaunus grafikus izveido jaunu:
-
-    <div id="GRAFIKA-ID" class="card-body"></div>
-      -> class="card-body" jāizmanto tikai tad ja grafiks atrodas <div class="card">.
-
-  Ieteicams ielikt viņu vismaz vienā rindā, kollonā un kārtī, piem.:
-
-    <div class="row"> <- Rinda
-      <div class="col"> <- Kollona
-        <div class="card">
-          <- Grafika <div> šeit (ar visu Id).
-        </div>
-      </div>
-      ... vairāk kollonas (sadalīsies vienādos lielumos, vienā rindā).
-    </div>
-
-  Protams šis viss jāliek iekš <div class="container">, jo tas ir galvenais objekts,
-  kas satur visus elementus.
-
-  Grafiku datus un formatējumu iespējams ievietot ./chart.js failā pie 'charts' objekta,
-  vairāk instrukcijas atrodamas tur.
-
--->
-
 <body>
-  <div class="container main-container">
+  <div class="container">
+    <a href="./game.html" class="btn btn-primary lg-btn btn-block p-5 mt-5 mb-5" role="button">
+      Uz Viktorīnu
+    </a>
 
-    <!-- ... -->
-
-    <div class="row pt-3">
-      <div class="col-12">
-        <h1>Transports</h1>
-        <hr>
+    <!--
+    Iedzīvotaju Grafiki
+    -->
+    <h1>Iedzīvotāji:</h1>
+    <hr>
+    <div class="row text-center">
+      <div class="col-12 col-md-6">
+        <div id="iedzivotaju-skaits"></div>
       </div>
-
-      <div class="col-12">
-        <div class="card-group">
-          <div class="card">
-            <div class="card-body">
-              <div id="GZG070"></div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body">
-              <div id="MAJDZIVNIEKI"></div>
-            </div>
-          </div>
-        </div>
+      <div class="col-12 col-md-6">
+        <div id="dzimstiba-latvija"></div>
       </div>
-    </div>
-
-    <!-- ... -->
-
-    <div class="row pt-3">
-      <div class="col-12">
-        <h1>Iedzīvotāji</h1><hr>
+      <div class="col-12 col-md-6">
+        <div id="mirstiba-latvija"></div>
       </div>
-
-      <!-- ... -->
-
-      <div class="col-12">
-        <div class="card-group">
-          <div class="card">
-            <div class="card-body text-center">
-              <h5 class="cart-title">
-                0,000,000
-              </h5>
-              <p class="card-text">
-                Iedzīvotāji
-              </p>
-            </div>
-          </div>
-
-          <!-- ... -->
-
-          <div class="card">
-            <div class="card-body text-center">
-              <h5 class="cart-title">
-                0,000,000
-              </h5>
-              <p class="card-text">
-                Iedzīvotāji
-              </p>
-            </div>
-          </div>
-
-          <!-- ... -->
-
-          <div class="card">
-            <div class="card-body text-center">
-              <h5 class="cart-title">
-                0,000,000
-              </h5>
-              <p class="card-text">
-                Iedzīvotāji
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ... -->
-
-      <div class="col-6 text-center">
-        <div id="IEDZIVOTAJI-SKAITS"></div>
+      <div class="col-12 col-md-6">
+        <div id="mirstiba-latvija"></div>
       </div>
     </div>
 
-    <!-- ... -->
-
-    <div class="row pt-3">
-      <div class="col-12 text-center">
-        <div id="IEDZIVOTAJI-LAULIBAS"></div>
-      </div>
-    </div>
-
-    <!-- ... -->
-
+    <!--
+    Reģionu Karte
+    -->
+    <h1>Apskati citus reģionus:</h1>
+    <hr>
     <div class="row">
-      <div class="col-12 text-center">
-        <div id="MINIMALA-ALGA"></div>
+      <div class="col">
+        <div id="region-map" class="region-map border rounded"></div>
       </div>
     </div>
 
-    <!-- ... -->
-
-    <div class="row">
-      <div class="col-12 text-center">
-        <div id="MAJDZIVNIEKI"></div>
+    <div class="row border border-rounded mt-4 pt-3 text-center">
+      <div class="col">
+        <p>2019 &copy; Olimps 3D | Veidoja
+          <a href="https://github.com/RT1O/">Toms Zvirbulis</a> &
+          <a href="https://github.com/RedBricc">Juris Ozoliņš</a>
+        </p>
       </div>
     </div>
-
-    <!-- ... -->
-
-    <div class="row">
-      <div class="col-12">
-        <h1>Apskati citus reģionus</h1><hr>
-      </div>
-
-      <!-- ... -->
-
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <div id="map" class="leaflet-map"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ... -->
-
-    <footer class="page-footer font-small blue">
-      <div class="footer-copyright text-center">© 2018 Copyright:
-        <a href="https://mdbootstrap.com/education/bootstrap/"> MDBootstrap.com</a>
-      </div>
-    </footer>
   </div>
 </body>
-<script src="./js/charts.js"></script>
-<script src="./js/maps.js"></script>
+<script src="./js/chart_renderer.js"></script>
+<script src="./js/region_map.js"></script>
 </html>

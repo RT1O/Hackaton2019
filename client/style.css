@@ -1,8 +1,42 @@
-body {
-  width: 60%;
-  margin: 0 auto;
+.region-map {
+  height: 450px;
 }
 
-.leaflet-map {
-  height: 600px;
+canvas {
+  height: 100%;
+  display: block;
+}
+
+.chart-body {
+  display: block;
+  height: 300px;
+  padding: 1px;
+}
+
+.container {
+  max-width: 868px;
+}
+
+@media only screen and (max-width: 1200) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media only screen and (max-width: 992) {
+  .container {
+    width: 768px;
+  }
+}
+
+@media only screen and (max-width: 768) {
+  .container {
+    width: 576px;
+  }
+}
+
+@media only screen and (max-width: 576) {
+  .container {
+    width: 576px;
+  }
 }
