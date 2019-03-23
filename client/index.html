@@ -15,7 +15,7 @@
   <script
   src="./leaflet/leaflet.js"></script>
   <script
-  src="./latvia-map.js">
+  src="./js/latvia-map-data.js">
   </script>
 </head>
 
@@ -47,46 +47,139 @@
 
 <body>
   <div class="container main-container">
-    <a href="./game.html">
-      Uz spēli...
-    </a>
-    <div class="row">
-      <div class="col mt-auto mb-auto chart-col text-center">
-        <div id="GZG070"></div>
+
+    <!-- ... -->
+
+    <div class="row pt-3">
+      <div class="col-12">
+        <h1>Transports</h1>
+        <hr>
+      </div>
+
+      <div class="col-12">
+        <div class="card-group">
+          <div class="card">
+            <div class="card-body">
+              <div id="GZG070"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div id="MAJDZIVNIEKI"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col chart-col text-center">
-        <div id="ISG010-0"></div>
+
+    <!-- ... -->
+
+    <div class="row pt-3">
+      <div class="col-12">
+        <h1>Iedzīvotāji</h1><hr>
+      </div>
+
+      <!-- ... -->
+
+      <div class="col-12">
+        <div class="card-group">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="cart-title">
+                0,000,000
+              </h5>
+              <p class="card-text">
+                Iedzīvotāji
+              </p>
+            </div>
+          </div>
+
+          <!-- ... -->
+
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="cart-title">
+                0,000,000
+              </h5>
+              <p class="card-text">
+                Iedzīvotāji
+              </p>
+            </div>
+          </div>
+
+          <!-- ... -->
+
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="cart-title">
+                0,000,000
+              </h5>
+              <p class="card-text">
+                Iedzīvotāji
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ... -->
+
+      <div class="col-6 text-center">
+        <div id="IEDZIVOTAJI-SKAITS"></div>
       </div>
     </div>
-    <div class="row">
-      <div class="col chart-col text-center">
-        <div id="ISG010-1"></div>
+
+    <!-- ... -->
+
+    <div class="row pt-3">
+      <div class="col-12 text-center">
+        <div id="IEDZIVOTAJI-LAULIBAS"></div>
       </div>
     </div>
+
+    <!-- ... -->
+
     <div class="row">
-      <div class="col chart-col text-center">
-        <div id="DSG001"></div>
+      <div class="col-12 text-center">
+        <div id="MINIMALA-ALGA"></div>
       </div>
     </div>
+
+    <!-- ... -->
+
     <div class="row">
-      <div class="col chart-col text-center">
-        <div id="MAJDZIVNIEKI-0"></div>
+      <div class="col-12 text-center">
+        <div id="MAJDZIVNIEKI"></div>
       </div>
     </div>
+
+    <!-- ... -->
+
     <div class="row">
-      <div class="col">
-        <div id="map" class="leaflet-map"></div>
+      <div class="col-12">
+        <h1>Apskati citus reģionus</h1><hr>
+      </div>
+
+      <!-- ... -->
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div id="map" class="leaflet-map"></div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col text-center">
-        <p>Empty Footer</p>
+
+    <!-- ... -->
+
+    <footer class="page-footer font-small blue">
+      <div class="footer-copyright text-center">© 2018 Copyright:
+        <a href="https://mdbootstrap.com/education/bootstrap/"> MDBootstrap.com</a>
       </div>
-    </div>
+    </footer>
   </div>
 </body>
-<script src="./charts.js"></script>
-<script src="./maps.js"></script>
+<script src="./js/charts.js"></script>
+<script src="./js/maps.js"></script>
 </html>
