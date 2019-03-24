@@ -8,6 +8,8 @@
   <title>Viktorīnas Spēle | Olimps 3D</title>
   <link rel="icon" href="favicon.png" type="image/x-icon">
 
+  <script src="./data/config.js"></script>
+
   <!--
   Nepiciešamie stili:
   -->
@@ -23,13 +25,13 @@
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
   <script src="./leaflet/leaflet.js"></script>
+  <script src="./js/utils.js"></script>
 
   <!--
   Nepiciešamie dati:
   -->
-  <script src="./data/latvia_data.js"></script>
-  <script src="./data/game_data.js"></script>
-  <script src="./data/config.js"></script>
+  <script src="./data/gameData.js"></script>
+  <script src="./data/latviaMap.js"></script>
 </head>
 
 <body>
@@ -37,16 +39,25 @@
     <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
-		      <h5 class="modal-title" id="exampleModalLabel"><span id="novada-name">Undefined</span></h5>
+          <h6 class="modal-title" id="label"></h6>
+          <strong><span id="current-points">0</span> punkti</strong>
 		    </div>
         <div class="modal-body">
-		      <span id="novada-question"></span>
-		      <hr>
-              <button type="button" class="btn btn-light btn-lg btn-block" id="novada-answer-0"></button>
-		      <button type="button" class="btn btn-light btn-lg btn-block" id="novada-answer-1"></button>
-		      <button type="button" class="btn btn-light btn-lg btn-block" id="novada-answer-2"></button>
-		      <button type="button" class="btn btn-light btn-lg btn-block" id="novada-answer-3"></button>
-		    </div>
+          <h5 id="question"></h5>
+          <hr>
+          <button id="answer0" type="button" class="btn btn-light btn-lg btn-block">
+          </button>
+          <button id="answer1" type="button" class="btn btn-light btn-lg btn-block">
+          </button>
+          <button id="answer2" type="button" class="btn btn-light btn-lg btn-block">
+          </button>
+          <button id="answer3" type="button" class="btn btn-light btn-lg btn-block">
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button id="end" type="button" class="btn btn-danger mr-auto">Pamest</button>
+          <button id="next" type="button" class="btn btn-primary disabled">Nākamais</button>
+        </div>
 	    </div>
 	  </div>
   </div>
@@ -56,31 +67,38 @@
       Uz Infografiku
     </a>
 
+    <div id="error-alert" class="mt-4 alert alert-danger alert-dismissable collapse" role="alert">
+      <span id="message"></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
     <div class="row">
       <div class="col-12">
         <div class="card-group">
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">Punkti</h5>
-              <p id='game-points' class="card-text">0</p>
+              <p id="total-points" class="card-text">0</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Bonuss</h5>
+              <p id="point-bonus" class="card-text">0</p>
             </div>
           </div>
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">Gājiens</h5>
-              <p id='game-points' class="card-text">1/30</p>
+              <p class="card-text"><span id="current-turn">1</span>/30</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="col-12">
-        <div class="mt-4 alert alert-warning alert-dismissable" role="alert">
-          Pagaidām <strong>nav iespējams</strong> atbildēt uz jautājumiem. <!-- <strong>izņemot</strong> - Rīgā, Liepājā un Daugavpilī. -->
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
         <div id="game-map" class="mt-4 game-map border rounded"></div>
       </div>
     </div>
@@ -98,10 +116,5 @@
     </div>
   </div>
 </body>
-<script src="./js/game_manager.js"></script>
-<script>
-$(window).bind("beforeunload", () => {
-  return "Vai tu esi pārliecināts ka gribi iziet?";
-});
-</script>
+<script src="./js/gameManager.js"></script>
 </html>

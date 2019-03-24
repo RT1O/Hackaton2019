@@ -6,7 +6,7 @@ const charts = [
     data: [
       {
         label: 'Iedzīvotāju skaits Latvijā',
-        key: 'Skaits'
+        col: 'Skaits'
       }
     ],
     options: {
@@ -20,7 +20,7 @@ const charts = [
     data: [
       {
         label: 'Dzimstība Latvijā (uz 1000 iedzīvotājiem)',
-        key: 'Dzimstība'
+        col: 'Dzimstība'
       }
     ]
   },
@@ -30,7 +30,7 @@ const charts = [
     data: [
       {
         label: 'Mirstība Latvijā',
-        key: 'Mirstība'
+        col: 'Mirstība'
       }
     ]
   },
@@ -40,15 +40,15 @@ const charts = [
     data: [
       {
         label: 'Suņi',
-        key: 'Suņi'
+        col: 'Suņi'
       },
       {
         label: 'Kaķi',
-        key: 'Kaķi'
+        col: 'Kaķi'
       },
       {
         label: 'Seski',
-        key: 'Seski'
+        col: 'Seski'
       }
     ],
     options: {

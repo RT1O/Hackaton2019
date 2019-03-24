@@ -7,6 +7,7 @@
 
   <title>Infografiks | Olimps 3D</title>
   <link rel="icon" href="favicon.png" type="image/x-icon">
+  <script src="./data/config.js"></script>
 
   <!--
   Nepiciešamie stili:
@@ -25,40 +26,30 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
   <script src="./leaflet/leaflet.js"></script>
-  
+  <script src="./js/utils.js"></script>
+
   <!--
   Nepiciešamie dati:
   -->
-  <script src="./data/chart_data.js"></script>
-  <script src="./data/latvia_data.js"></script>
-  <script src="./data/config.js"></script>
+  <script src="./data/charts.js"></script>
+  <script src="./data/latviaMap.js"></script>
 </head>
 
 <body>
   <div class="container">
-    <a href="javascript:" id="return-to-top"><i class="icon-chevron-up"></i></a>
-	<a href="./game.html" class="btn btn-primary lg-btn btn-block p-3 mt-4 mb-4" role="button">
+    <a href="#" id="return-to-top"><i class="icon-chevron-up"></i></a>
+	  <a href="./game.html" class="p-3 mt-4 mb-4 btn btn-primary lg-btn btn-block" role="button">
       Uz Viktorīnu
     </a>
 
-    <div class="mt-4 alert alert-warning alert-dismissable" role="alert">
-      Šie <strong>nav visi</strong> grafiki, pārējie tiks pievienoti vēlāk.
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <div id="error-alert" class="mt-4 alert alert-danger alert-dismissable collapse" role="alert">
+      <span id="message"></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
 
-	<div id="error-alert" class="mt-4 alert alert-danger alert-dismissable collapse" role="alert">
-      <span id="error-message"></span>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-	
-    <!--
-    Iedzīvotaju Grafiki
-    -->
-    <h2 class="mt-2 category-title">Iedzīvotāji</h1>
+    <h2 class="mt-2 category-title">Iedzīvotāji</h2>
     <hr>
     <div class="row text-center">
       <div class="col-12 col-md-6">
@@ -73,66 +64,58 @@
       <div class="col-12 col-md-6">
         <div id="majdzivnieki-latvija"></div>
       </div>
+      <div class="col-6">
+        <div id="none"></div>
+      </div>
     </div>
 
-    <!--
-    Reģionu Karte
-    -->
-    <h2 class="mt-2 category-title">Apskati citus reģionus</h1>
+    <h2 class="mt-2 category-title">Apskati citus reģionus</h2>
     <hr>
     <div class="row">
       <div class="col-12 mt-2 mb-4">
-        <!-- <ul class="list-inline">
-          <li class="list-inline-item">
-            <label><input type="checkbox" value="" checked> Pilsētas un Novadi</label>
-          </li>
-          <li class="list-inline-item">
-            <label><input type="checkbox" value=""> Šķirošanas punkti</label>
-          </li>
-        </ul> -->
-		<div class="btn-group">
-			<div class="dropdown">
-				<button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				  Attēlotie Dati
-				</button>
-				<div class="dropdown-menu">
-				  <a class="dropdown-item active" href="#">Iedzīvotāji</a>
-				  <a class="dropdown-item" href="#">Automašīnas</a>
-				  <a class="dropdown-item" href="#">Koki</a>
-				</div>
-			</div>
-			<div class="dropdown ml-2">
-				<button type="button" class="btn btn-red dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				  Attēlotie Punkti
-				</button>
-				<ul class="dropdown-menu checkbox-menu allow-focus">
-					<li>
-						<div class="checkbox">
-							<label>
-								<input type="checkbox">Šķirošanas Punkti
-							</label>
-						</div>
-					</li>
-					<li>
-						<div class="checkbox">
-							<label>
-								<input type="checkbox">Vilcienu Stacijas
-							</label>
-						</div>
-					</li>
-					<li>
-						<div class="checkbox">
-							<label>
-								<input type="checkbox">Autobusu Pieturas
-							</label>
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>
+        <div class="btn-group">
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Attēlotie Dati
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item active" href="#">Iedzīvotāji</a>
+              <a class="dropdown-item" href="#">Automašīnas</a>
+              <a class="dropdown-item" href="#">Koki</a>
+            </div>
+          </div>
+          <div class="dropdown ml-2">
+            <button class="btn btn-danger dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Attēlotie Punkti
+            </button>
+            <ul class="dropdown-menu checkbox-menu allow-focus">
+              <li>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="recycle-checkbox">Šķirošanas Punkti
+                  </label>
+                </div>
+              </li>
+              <li>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="staciju-checkbox">Vilcienu Stacijas
+                  </label>
+                </div>
+              </li>
+              <li>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" id="pieturas-checkbox">Autobusu Pieturas
+                  </label>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="col-12">
-        <div id="region-map" class="region-map border rounded"></div>
+        <div class="region-map border rounded" id="region-map"></div>
       </div>
     </div>
 
@@ -140,24 +123,22 @@
       <div class="col">
         <hr>
         <p>
-          <a href="https://lata.org.lv/skolas2019">Latvijas Skolu Atvērto Datu Hakatons 2019</a>
+          <a href="https://lata.org.lv/skolas2019">
+            Latvijas Skolu Atvērto Datu Hakatons 2019
+          </a>
           @ Olimps 3D | Veidoja
-          <a href="https://github.com/RT1O/">Toms Zvirbulis</a> &
-          <a href="https://github.com/RedBricc">Juris Ozoliņš</a>
+          <a href="https://github.com/RT1O/">
+            Toms Zvirbulis
+          </a>
+          &
+          <a href="https://github.com/RedBricc">
+            Juris Ozoliņš
+          </a>
         </p>
       </div>
     </div>
   </div>
 </body>
-<script src="./js/chart_renderer.js"></script>
-<script src="./js/region_map.js"></script>
-<script src="./js/to_top.js"></script>
-<script>
-$(".checkbox-menu").on("change", "input[type='checkbox']", function() {
-   $(this).closest("li").toggleClass("active", this.checked);
-});
-$(document).on('click', '.allow-focus', function (e) {
-  e.stopPropagation();
-});
-</script>
+<script src="./js/mapManager.js"></script>
+<script src="./js/chartRenderer.js"></script>
 </html>

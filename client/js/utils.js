@@ -1,0 +1,103 @@
+const mapboxURL = 'https://api.mapbox.com/styles/v1/rt1o/cjtijj0di2p881fp5d8n8gs27/tiles/{z}/{x}/{y}?access_token=';
+
+function randInt(from, to) {
+  return Math.floor(Math.random() * to) + from;
+}
+
+function getMap(id, coordinates, zoom) {
+  const map = L.map(id).setView(coordinates, zoom);
+  L.tileLayer(mapboxURL + config.mapbox.token, {
+    minZoom: zoom - 1
+  }).addTo(map);
+  return map;
+}
+
+function setMapData(map, data, options) {
+  let geoJson;
+  geoJson = L.geoJson(data, {
+    style: (feature) => {
+      if (typeof options.style == undefined)
+        return {
+          fillColor: 'rgb(0, 49, 66)'
+        };
+      return options.style(feature, feature.properties);
+    },
+    onEachFeature: (feature, layer) => {
+      layer.on({
+        click: (event) => {
+          if (typeof options.onClick == undefined) {
+            // ... Defaults
+          } else {
+            options.onClick(event, layer, feature);
+          }
+        },
+        mouseover: (event) => {
+          if (typeof options.onMouseOver == undefined) {
+            // ... Defaults
+          } else {
+            options.onMouseOver(event, layer, feature);
+					}
+					if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
+						layer.bringToFront();
+        },
+        mouseout: (event) => {
+          geoJson.resetStyle(layer);
+        }
+      });
+    }
+  }).addTo(map);
+  return geoJson;
+}
+
+function getOpenData(source) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: config.host + '/chart/' + source,
+      method: 'GET',
+      dataType: 'JSON',
+      success: (result) => {
+        resolve(result);
+      },
+      error: (err) => {
+        const alert = $('#error-alert');
+        alert.find('#message')
+          .text(config.error.ajax);
+        alert.show();
+        reject(err);
+      }
+    });
+  });
+}
+
+// Taken from the depths of the internet.
+function shuffleArray(a) {
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
+  }
+  return a;
+}
+
+$(window).scroll(() => {
+	if ($(this).scrollTop() >= 50) {
+		$('#return-to-top').fadeIn(200);
+	} else {
+		$('#return-to-top').fadeOut(200);
+	}
+});
+$('#return-to-top').click(() => {
+	$('body, html').animate({
+		scrollTop: 0
+	}, 500);
+});
+
+$('.checkbox-menu').on('change', "input[type='checkbox']", () => {
+	$(this).closest('li').toggleClass('active', this.checked);
+});
+
+$(document).on('click', '.allow-focus', (e) => {
+	e.stopPropagation();
+});
