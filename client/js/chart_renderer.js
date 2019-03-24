@@ -123,6 +123,8 @@ function createCharts() {
       },
       error: (err) => {
         console.log(err);
+		$('#error-alert').show();
+		$('#error-message').text('Nevarēja savienoties ar serveri.');
       }
     });
   });

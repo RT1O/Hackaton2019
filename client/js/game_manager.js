@@ -26,6 +26,8 @@ const questions = {
   '0': [
     {
       msg: 'Cik iedzīvotāju šeit bija 2018. gadā?',
+	  source: 'iedzivotaju_skaits_novados',
+	  row: '2018', 
       getAnswer (data) {
         return Math.max(...data);
       },
@@ -114,17 +116,40 @@ function setGeoJson(map, data) {
       $('#novada-question')
         .text(questions['0'][0].msg);
 
-      const data = [637971,367266,188494,243032,232759,264857,637971,83250,56383];
-      const answers = questions['0'][0].getAnswers(data);
-
+      const question = questions['0'][0];
+	  let data = [637971,367266,188494,243032,232759,264857,637971,83250,56383];
+	  
+	  /*
+	  $ajax({
+	    url: API_BASE_URL + '/chart/' + question.source,
+		method: 'GET',
+		dataType: 'json',
+		success: (_data) => {
+			data = _data.map((x) => {
+				return x;
+			});
+		},
+		error: (err) => {
+		
+		}
+	  });
+	  */
+	  
+	  const answers = question.getAnswers(data);
+	  const correctAnswer = question.getAnswer(data);
+		
       for (let i = 0; i < 4; i++) {
         $('#novada-answer-' + i).text(answers[i]);
-        $('#novada-answer-' + i).click(() => {
-          if (answers[i] != questions['0'][0].getAnswer(data))
-            $(this).addClass('btn-danger');
-          else
-            $(this).addClass('btn-success');
-        });
+		$('#novada-answer-' + i).click(() => {
+			console.log(answers[i], correctAnswer, $('#novada-answer-' + i));
+			if (answers[i] != correctAnswer) {
+				$('#novada-answer-' + i).removeClass('btn-light').addClass('btn-danger');
+				alert('Nepareizi!');
+			} else {
+				$('#novada-answer-' + i).removeClass('btn-light').addClass('btn-success');
+				alert('Pareizi!');
+			}
+		});
       }
     }
   }
