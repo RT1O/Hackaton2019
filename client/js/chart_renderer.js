@@ -13,58 +13,28 @@ function getFirstKeyValue(object) {
   return object[getFirstKey(object)];
 }
 
-function getChartLabels(data, chart) {
-  if (!chart.rows)
-    return data.map((a) => {
-      return getFirstKeyValue(a);
-    });
-  return Object.keys(data[0])
-    .filter((a) => {
-      return !chart.excludes.includes(a)
-        && a != getFirstKey(data[0]);
-    });
+function getChartLabels(data) {
+  return data.map((a) => {
+    return getFirstKeyValue(a);
+  });
 }
 
-function getDatasetData(data, chart, dataset) {
-  if (!chart.rows)
-    return data.map((a) => {
-      return parseInt(a[dataset.key]);
-    });
-  let _data = [];
-  let datasetData = null;
-  for (let i = 0; i < data.length; i++) {
-    if (getFirstKeyValue(data[i]) == dataset.row) {
-      datasetData = data[i]; break;
-    }
-  }
-  Object.keys(datasetData)
-    .forEach((key) => {
-      console.log(key);
-      if (!chart.excludes.includes(key)
-        && key != getFirstKey(datasetData))
-        _data.push(datasetData[key]);
-    });
-  return _data;
+function getDatasetData(data, dataset) {
+  return data.map((a) => {
+    return parseInt(a[dataset.key]);
+  });
 }
 
 function getColors(chart, index = 0) {
-  let colors;
-  if (!chart.rows) {
-    colors = defaultColors[index % defaultColors.length];
-  } else {
-    colors = defaultColors.map((color) => {
-      return color;
-    }).concat(colors);
-  }
+  const colors = defaultColors[index % defaultColors.length];
+
+  /*colors = defaultColors.map((color) => {
+    return color;
+  }).concat(colors);*/
+
   return {
     borderColor: colors,
     backgroundColor: colors
-  };
-}
-
-function getChartOptions(chart) {
-  return {
-
   };
 }
 
@@ -76,12 +46,12 @@ function renderChart(ctx, data, chart) {
       console.log('An error occured while slicing the data: ', err.message);
     }
   }
-  const chartLabels = getChartLabels(data, chart);
+  const chartLabels = getChartLabels(data);
   const chartData = chart.data.map((dataset, index) => {
     return Object.assign({}, dataset.options, getColors(chart, index), chart.options,
       {
         label: dataset.label,
-        data: getDatasetData(data, chart, dataset)
+        data: getDatasetData(data, dataset)
       });
   });
 

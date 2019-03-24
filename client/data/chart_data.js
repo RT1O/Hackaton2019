@@ -6,7 +6,7 @@ const charts = [
     data: [
       {
         label: 'Iedzīvotāju skaits Latvijā',
-        key: 'Iedzīvotāju skaits gada sākumā'
+        key: 'Skaits'
       }
     ],
     options: {
@@ -36,13 +36,26 @@ const charts = [
   },
   {
     id: 'majdzivnieki-latvija',
-    source: 'majdzivnieki_ldatvija',
-    type: 'pie',
+    source: 'majdzivnieki_latvija',
     data: [
       {
-        label: 'Mājdzīvnieki Latvijā',
-        key: 'Mājdzīvnieki'
+        label: 'Suņi',
+        key: 'Suņi'
+      },
+      {
+        label: 'Kaķi',
+        key: 'Kaķi'
+      },
+      {
+        label: 'Seski',
+        key: 'Seski'
       }
-    ]
+    ],
+    options: {
+      title: {
+        display: true,
+        text: 'Mājdzīvnieki Latvijā'
+      }
+    }
   }
 ];

@@ -11,6 +11,7 @@
   <!--
   Nepiciešamie stili:
   -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&amp;subset=latin-ext" rel="stylesheet">
   <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="./leaflet/leaflet.css" rel="stylesheet" type="text/css">
   <link href="./style.css" rel="stylesheet" type="text/css">
@@ -38,7 +39,7 @@
     </a>
 
     <div class="mt-4 alert alert-warning alert-dismissable" role="alert">
-      Šie nav visi grafiki, pārējie tiks pievienoti vēlāk.
+      Šie <strong>nav visi</strong> grafiki, pārējie tiks pievienoti vēlāk.
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -70,7 +71,17 @@
     <h2 class="mt-2 category-title">Apskati citus reģionus</h1>
     <hr>
     <div class="row">
-      <div class="col">
+      <div class="col-12 mt-2">
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <label><input type="checkbox" value="" checked> Pilsētas un Novadi</label>
+          </li>
+          <li class="list-inline-item">
+            <label><input type="checkbox" value=""> Šķirošanas punkti</label>
+          </li>
+        </ul>
+      </div>
+      <div class="col-12">
         <div id="region-map" class="region-map border rounded"></div>
       </div>
     </div>

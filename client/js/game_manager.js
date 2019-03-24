@@ -1,5 +1,53 @@
-const questions = {
+function shuffle(a) {
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
+  }
+  return a;
+}
 
+function getRandom(array, amount, excludes = [], result = []) {
+  let a = 0;
+  console.log(excludes, a)
+  while (excludes.includes(a) || result.includes(a) || a == 0)
+    a = array[Math.floor(Math.random() * array.length)];
+  result.push(a);
+  if (result.length < amount) {
+    excludes.push(a);
+    return getRandom(array, amount, excludes, result);
+  }
+  return result;
+}
+
+const questions = {
+  '0': [
+    {
+      msg: 'Cik iedzīvotāju šeit bija 2018. gadā?',
+      getAnswer (data) {
+        return Math.max(...data);
+      },
+      getAnswers (data) {
+        return shuffle([
+          this.getAnswer(data), ...getRandom(data, 3, [this.getAnswer(data)])
+        ]);
+      }
+    },
+    {
+      msg: ''
+    }
+  ],
+  '1': [
+
+  ],
+  '2': [
+
+  ],
+  '3': [
+
+  ]
 }
 
 function getMap(coordinates, zoom, token) {
@@ -17,7 +65,8 @@ function setGeoJson(map, data) {
     'rgb(200, 200, 200)',
     'rgb(117, 206, 135)',
     'rgb(255, 165, 0)',
-    'rgb(196, 57, 58)'
+    'rgb(196, 57, 58)',
+    'rgb(121, 86, 135)'
   ];
 
   function getColor(properties) {
@@ -57,21 +106,25 @@ function setGeoJson(map, data) {
     const properties = e.target.feature.properties;
 
     if (properties.diff > 0 && !properties.completed) {
-      const id = properties.id.substr(1);
-      let name = id.charAt(0).toUpperCase() + id.substr(1);
-
       $('#novada-modal').modal('show');
 
-      if (properties.id.charAt(0) == 'n')
-        name += ' Novads';
-
-      $('#novada-name').text(name);
+      $('#novada-name')
+        .text(properties.id);
 
       $('#novada-question')
-        .text('Tukšs jautājums.');
+        .text(questions['0'][0].msg);
+
+      const data = [637971,367266,188494,243032,232759,264857,637971,83250,56383];
+      const answers = questions['0'][0].getAnswers(data);
 
       for (let i = 0; i < 4; i++) {
-        $('#novada-answer-' + i).text('Atbilde ' + (i + 1));
+        $('#novada-answer-' + i).text(answers[i]);
+        $('#novada-answer-' + i).click(() => {
+          if (answers[i] != questions['0'][0].getAnswer(data))
+            $(this).addClass('btn-danger');
+          else
+            $(this).addClass('btn-success');
+        });
       }
     }
   }
@@ -95,19 +148,8 @@ function setGeoJson(map, data) {
 const map = getMap([56.946285, 24.105078], 7,
   'pk.eyJ1IjoicnQxbyIsImEiOiJjanRoN2Rwb24wZm1nM3lwNjRjOWlmaGlkIn0.KQ0vUQXa5yDTCq9QF7siPA');
 
-function shuffle(a) {
-  var j, x, i;
-  for (i = a.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1));
-    x = a[i];
-    a[i] = a[j];
-    a[j] = x;
-  }
-  return a;
-}
-
 function generateDifficulty(values) {
-  const set = [0, 0, 0];
+  const set = [0, 0, 0, 0];
   const final = shuffle(konturas.features.map((f) => {
     if (f.properties.id != 'priga') {
       f.properties.diff = 0;
@@ -126,7 +168,29 @@ function generateDifficulty(values) {
         if (Math.floor(Math.random() * 100) > 80) {
           if (set[x] >= values[x])
             break;
-          final[i].properties.diff = (x + 1);
+
+          const properties = final[i].properties;
+          // const question  = questions[i][Math.floor(Math.random() * questions[i].length)];
+
+          properties.diff = (x + 1);
+
+          /*
+          $.ajax({
+            url: API_BASE_URL + '/chart/' + question.source,
+            method: 'GET',
+            dataType: 'json',
+            success: (data) => {
+              properties.question = question.msg.replace(':x:', properties.id.charAt(1).toUpperCase() + properties.id.substr(2));
+              properties.answers  = {
+                correct: 0,
+                incorrect: [0, 0, 0]
+              }
+            },
+            error: (err) => {
+
+            });*/
+
+          final[i].properties = properties;
           set[x] += 1;
         }
       }
@@ -144,4 +208,4 @@ function generateDifficulty(values) {
   return final;
 }
 
-const geoJson = setGeoJson(map, generateDifficulty([15, 10, 5]));
+const geoJson = setGeoJson(map, generateDifficulty([15, 10, 5, 1]));
