@@ -27,12 +27,49 @@ h1, h2, h3, h4, h5 {
   height: 300px;
 }
 
+.dropdown-menu {
+	z-index: 9999;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+	background-color: #eee;
+}
+
+.dropdown-menu .active {
+	color: #000;
+	font-weight: 600;
+	background-color: #fff;
+}
+
 .btn-primary {
+  border: 0px;
   background-color: #003142 !important;
 }
 
 .btn-primary:hover {
   background-color: #002735 !important;
+}
+
+.btn-red {
+  border: 0px;
+  color: #fff;
+  background-color: rgb(214, 89, 167) !important;
+}
+
+.btn-red:hover {
+  color: #fff;
+  background-color: rgb(204, 79, 157) !important;
+}
+
+.btn-green {
+  border: 0px;
+  color: #003132;
+  background-color: rgb(201, 209, 0) !important;
+}
+
+.btn-green:hover {
+  background-color: rgb(191, 199, 0) !important;
 }
 
 @media only screen and (max-width: 1200) {
@@ -95,4 +132,30 @@ h1, h2, h3, h4, h5 {
 #return-to-top:hover i {
     color: #fff;
     top: 5px;
+}
+
+.checkbox-menu li label {
+    display: block;
+    padding: 3px 10px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    margin: 0;
+    transition: background-color .4s ease;
+}
+
+.checkbox-menu li.active label {
+	font-weight: 600;
+}
+
+.checkbox-menu li label:hover {
+	background-color: #eee;
+}
+
+.checkbox-menu li input {
+    top: 2px;
+    margin: 0px 5px;
+    position: relative;
 }

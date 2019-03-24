@@ -12,19 +12,19 @@
   Nepiciešamie stili:
   -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&amp;subset=latin-ext" rel="stylesheet">
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
   <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="./leaflet/leaflet.css" rel="stylesheet" type="text/css">
   <link href="./style.css" rel="stylesheet" type="text/css">
-  <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-  
+
   <!--
   Nepieciešamais JavaScript:
   -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
   <script src="./leaflet/leaflet.js"></script>
-  <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
   
   <!--
   Nepiciešamie dati:
@@ -74,15 +74,55 @@
     <h2 class="mt-2 category-title">Apskati citus reģionus</h1>
     <hr>
     <div class="row">
-      <div class="col-12 mt-2">
-        <ul class="list-inline">
+      <div class="col-12 mt-2 mb-4">
+        <!-- <ul class="list-inline">
           <li class="list-inline-item">
             <label><input type="checkbox" value="" checked> Pilsētas un Novadi</label>
           </li>
           <li class="list-inline-item">
             <label><input type="checkbox" value=""> Šķirošanas punkti</label>
           </li>
-        </ul>
+        </ul> -->
+		<div class="btn-group">
+			<div class="dropdown">
+				<button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  Attēlotie Dati
+				</button>
+				<div class="dropdown-menu">
+				  <a class="dropdown-item active" href="#">Iedzīvotāji</a>
+				  <a class="dropdown-item" href="#">Automašīnas</a>
+				  <a class="dropdown-item" href="#">Koki</a>
+				</div>
+			</div>
+			<div class="dropdown ml-2">
+				<button type="button" class="btn btn-red dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  Attēlotie Punkti
+				</button>
+				<ul class="dropdown-menu checkbox-menu allow-focus">
+					<li>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox">Šķirošanas Punkti
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox">Vilcienu Stacijas
+							</label>
+						</div>
+					</li>
+					<li>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox">Autobusu Pieturas
+							</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
       </div>
       <div class="col-12">
         <div id="region-map" class="region-map border rounded"></div>
@@ -105,4 +145,12 @@
 <script src="./js/chart_renderer.js"></script>
 <script src="./js/region_map.js"></script>
 <script src="./js/to_top.js"></script>
+<script>
+$(".checkbox-menu").on("change", "input[type='checkbox']", function() {
+   $(this).closest("li").toggleClass("active", this.checked);
+});
+$(document).on('click', '.allow-focus', function (e) {
+  e.stopPropagation();
+});
+</script>
 </html>
