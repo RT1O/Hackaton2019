@@ -1,6 +1,6 @@
-# Olimps 3D @ OpendataHackathon2019
+# Olimps 3D @ Latvijas Skolu Atvērto Datu Hakatons 2019
 
-## Nepiciešamais:
+## Nepieciešamais:
 
 1. git
 
