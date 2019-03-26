@@ -13,6 +13,7 @@ const colors = [
 function generateDifficulty(values) {
   const set = values.map((_) => 0);
   const final = shuffleArray(konturas.features.map((feature) => {
+
     feature.properties.diff = 0;
     feature.properties.completed = false;
 
@@ -68,6 +69,7 @@ const mapOptions = {
   onClick: (event, layer, feature) => {
     const properties = feature.properties;
     const diff = properties.diff;
+
     const novadaModal = $('#novada-modal');
 
     function updateTheMap() {
@@ -75,16 +77,8 @@ const mapOptions = {
         if (f.properties.id == properties.id)
           mapData[i].properties.completed = true;
       });
-      for (i in map._layers) {
-        if (map._layers[i].options.format == undefined && map._layers[i]._url == undefined) {
-          try {
-            map.removeLayer(map._layers[i]);
-          } catch (err) {
-            console.log("Problem with removing:  " + e  + ":" + map._layers[i]);
-          }
-        }
-      }
-      setMapData(map, mapData, mapOptions);
+      map.removeLayer(geoJson);
+      geoJson = setMapData(map, mapData, mapOptions);
     }
 
     function endQuestion() {
@@ -107,13 +101,13 @@ const mapOptions = {
       }
     }
 
-    function openQuestion() {
+    async function openQuestion() {
       if (game.currentQuestion >= 2)
         $('#next').text('Pabeigt');
 
       const question = game.questions[game.currentQuestion];
 
-      if (question == undefined)
+      if (question == null)
         return;
 
       novadaModal.modal({
@@ -126,10 +120,13 @@ const mapOptions = {
       novadaModal.find('#question')
         .text(question.msg);
 
-      const data = [123123, 12312, 213123, 51232, 5123, 412];
+      let data = [];
 
-      const answers = shuffleArray(question.getAnswers(data));
-      const correctAnswer = question.getAnswer(data);
+      if (typeof question.source != 'undefined')
+        data = await getOpenData(question.source).then((r) => r);
+
+      const answers = shuffleArray(question.getAnswers(properties.id, data));
+      const correctAnswer = question.getAnswer(properties.id, data);
 
       for (let i = 0; i < 4; i++) {
         novadaModal
@@ -224,4 +221,4 @@ const mapOptions = {
   }
 };
 
-setMapData(map, mapData, mapOptions);
+geoJson = setMapData(map, mapData, mapOptions);

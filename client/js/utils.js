@@ -87,7 +87,6 @@ function shuffleArray(a) {
   return a;
 }
 
-
 // Another one of those mystery functions.
 function removeDiacritics (input) {
   let output = "";

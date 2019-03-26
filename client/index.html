@@ -91,16 +91,16 @@
     <h2 class="mt-2 category-title">Apskati citus reģionus</h2>
     <hr>
     <div class="row">
-      <div class="col-12 mt-2 mb-4">
+      <div class="col-12 mt-2 mb-2">
         <div class="btn-group">
           <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Attēlotie Dati
             </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item active" href="#">Iedzīvotāji</a>
-              <a class="dropdown-item" href="#">Automašīnas</a>
-              <a class="dropdown-item" href="#">Koki</a>
+            <div id="map-dropdown" class="dropdown-menu checkbox-menu allow-focus">
+              <div class="dropdown-item active" id="default-novadi">Bez datiem</div>
+              <div class="dropdown-item" id="algas-novadi">Vidējā alga</div>
+              <div class="dropdown-item" id="population-novadi">Iedzīvotāju skaits 2018. gadā</div>
             </div>
           </div>
           <div class="dropdown ml-2">
@@ -111,25 +111,23 @@
               <li>
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" id="recycle-checkbox">Šķirošanas Punkti
+                    <input type="checkbox" id="recycle-checkbox">Šķirošanas punkti
                   </label>
                 </div>
               </li>
               <li>
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" id="staciju-checkbox">Vilcienu Stacijas
-                  </label>
-                </div>
-              </li>
-              <li>
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" id="pieturas-checkbox">Autobusu Pieturas
+                    <input type="checkbox" id="pieturas-checkbox">Autobusu pieturas
                   </label>
                 </div>
               </li>
             </ul>
+          </div>
+          <div class="ml-2 p-2">
+            <label>
+              <input type="checkbox" id="novadu-checkbox" checked="checked">Novadi
+            </label>
           </div>
         </div>
       </div>
