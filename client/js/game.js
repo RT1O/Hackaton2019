@@ -39,25 +39,6 @@ function generateDifficulty(values) {
   return final;
 }
 
-function removeDiacritics(input)
-{
-    var output = "";
-
-    var normalized = input.normalize("NFD");
-    var i=0;
-    var j=0;
-
-    while (i<input.length)
-    {
-        output += normalized[j];
-
-        j += (input[i] == normalized[j]) ? 1 : 2;
-        i++;
-    }
-
-    return output;
-}
-
 function getColor(properties) {
   return properties.completed ? 'rgb(120, 120, 120)' : colors[properties.diff % colors.length];
 }
@@ -65,11 +46,13 @@ function getColor(properties) {
 let geoJson;
 let mapData = generateDifficulty([15, 9, 5, 1]);
 
-let totalPoints = 0;
-let currentPoints = 0;
-let currentTurn = 1;
-let pointBonus = 0;
-
+const game = {
+  pointBonus: 0,
+  totalPoints: 0,
+  currentPoints: 0,
+  currentTurn: 1,
+  currentQuestion: 0
+};
 const awardedPoints = [100, 200, 300, 400];
 
 const map = getMap('game-map', [56.946285, 24.105078], 7);
@@ -84,6 +67,7 @@ const mapOptions = {
   },
   onClick: (event, layer, feature) => {
     const properties = feature.properties;
+    const diff = properties.diff;
     const novadaModal = $('#novada-modal');
 
     function updateTheMap() {
@@ -91,7 +75,6 @@ const mapOptions = {
         if (f.properties.id == properties.id)
           mapData[i].properties.completed = true;
       });
-
       for (i in map._layers) {
         if (map._layers[i].options.format == undefined && map._layers[i]._url == undefined) {
           try {
@@ -101,18 +84,19 @@ const mapOptions = {
           }
         }
       }
-
       setMapData(map, mapData, mapOptions);
     }
 
-    function endTurn() {
+    function endQuestion() {
       novadaModal.modal('toggle');
 
-      currentTurn += 1;
-      currentPoints = 0;
+      game.currentTurn += 1;
+      game.currentPoints = 0;
 
-      $('#current-turn').text(currentTurn);
-      $('#current-points').text('0');
+      $('#current-turn')
+        .text(game.currentTurn);
+      $('#current-points')
+        .text(game.currentPoints);
 
       updateTheMap();
     }
@@ -123,10 +107,11 @@ const mapOptions = {
       }
     }
 
-    if (properties.diff > 0 && !properties.completed) {
-      const random = randInt(0, questions[0].length);
-      const question = questions[0][random];
-      //const question = questions[properties.diff - 1][randInt(0, questions[properties.diff - 1].length - 1)];
+    function openQuestion() {
+      if (game.currentQuestion >= 2)
+        $('#next').text('Pabeigt');
+
+      const question = game.questions[game.currentQuestion];
 
       if (question == undefined)
         return;
@@ -136,16 +121,19 @@ const mapOptions = {
         keyboard: false
       }).show();
 
-      novadaModal.find('#label').text(properties.id);
-      novadaModal.find('#question').text(question.msg);
+      novadaModal.find('#label')
+        .text(properties.id);
+      novadaModal.find('#question')
+        .text(question.msg);
 
-      let data = [637971, 367266, 188494, 243032, 232759, 264857, 637971, 83250, 56383];
+      const data = [123123, 12312, 213123, 51232, 5123, 412];
 
       const answers = shuffleArray(question.getAnswers(data));
       const correctAnswer = question.getAnswer(data);
 
       for (let i = 0; i < 4; i++) {
-        novadaModal.find('#answer' + i)
+        novadaModal
+          .find('#answer' + i)
           .removeClass('btn-danger btn-success')
           .addClass('btn-light');
       }
@@ -153,60 +141,80 @@ const mapOptions = {
       const endButton = novadaModal.find('#end');
 
       endButton.unbind('click');
-      endButton.click(() => {
-        unbindClickEvent();
-        endTurn();
-      });
+      endButton
+        .click(() => {
+          unbindClickEvent();
+          endQuestion();
+        });
 
       const nextButton = novadaModal.find('#next');
 
       if (!nextButton.hasClass('disabled'))
         nextButton.addClass('disabled');
+
       nextButton.unbind('click');
-      nextButton.click(() => {
-        if (nextButton.hasClass('disabled'))
-          return;
-        unbindClickEvent();
-        endTurn();
-      });
+      nextButton
+        .click(() => {
+          if (nextButton.hasClass('disabled'))
+            return;
+          unbindClickEvent();
+
+          if (game.currentQuestion >= 2)
+            endQuestion();
+
+          game.currentQuestion += 1;
+
+          openQuestion();
+        });
 
       for (let i = 0; i < 4; i++) {
+        const currentAnswer = answers[i];
         const answerElem = novadaModal.find('#answer' + i);
 
-        answerElem.text(answers[i]);
-        answerElem.click(() => {
+        answerElem.text(currentAnswer);
+        answerElem
+          .click(() => {
 
-          let points = 0;
+            const isCorrect = currentAnswer == correctAnswer;
+            const pointsGained = (isCorrect ? awardedPoints[diff - 1] + game.pointBonus : 0);
 
-          nextButton.removeClass('disabled');
+            nextButton.removeClass('disabled');
+            answerElem.removeClass('btn-light');
 
-          if (answers[i] != correctAnswer) {
-            pointBonus = 0;
-            answerElem.removeClass('btn-light').addClass('btn-danger');
-          } else {
-            points = awardedPoints[properties.diff - 1] + pointBonus;
-            answerElem.removeClass('btn-light').addClass('btn-success');
-            pointBonus += 25;
-          }
+            answerElem.addClass(isCorrect ? 'btn-success' : 'btn-danger');
 
-          totalPoints   += points;
-          currentPoints += points;
+            game.pointBonus += isCorrect ? 25 : 0;
+            game.totalPoints += pointsGained;
+            game.currentPoints += pointsGained;
 
-          $('#point-bonus').text(pointBonus);
-          $('#total-points').text(totalPoints);
+            $('#point-bonus').text(game.pointBonus);
+            $('#total-points').text(game.totalPoints);
+            $('#current-points').text(game.currentPoints);
 
-          novadaModal.find('#current-points').text(currentPoints);
+            if (answerElem.has('strong'))
+              answerElem.find('strong').remove();
+            answerElem.append(`<strong> +${pointsGained}</strong>`);
 
-          if (answerElem.has('strong'))
-            answerElem.find('strong').remove();
-          answerElem.append('<strong> +' + points + '</strong>')
-
-          unbindClickEvent();
-        });
+            unbindClickEvent();
+          });
       }
     }
+
+    if (properties.diff > 0 && !properties.completed) {
+      $('#next').text('Nākamais');
+
+      game.questions = [
+        questions[0][randInt(0, questions[0].length)],
+        questions[0][randInt(0, questions[0].length)],
+        questions[0][randInt(0, questions[0].length)]
+      ];
+
+      game.currentQuestion = 0;
+
+      openQuestion();
+    }
   },
-  onMouseOver: (event, layer, feature, ctx) => {
+  onMouseOver: (event, layer, feature) => {
     if (feature.properties.diff > 0 && !feature.properties.completed) {
       layer.setStyle({
         weight: 4,

@@ -18,31 +18,29 @@ const requiredStates = ['Riga'];
 const questions = {
   '0': [
     {
-      msg: 'Cik iedzīvotāju šeit bija 2018. gadā?',
+      msg: 'Cik iedzīvotāju bija šijā pilsētā/novadā 2018. gadā?',
 	    row: '2018',
 	    source: 'iedzivotaju_skaits_novados',
-      getAnswer (data = []) {
+      getAnswer (data) {
         return Math.max(...data);
       },
-      getAnswers (data = []) {
+      getAnswers (data) {
         return [
-          this.getAnswer(data),
-          ...getRandomAnswers(data, [this.getAnswer(data)])
+          this.getAnswer(data), ...getRandomAnswers(data, [this.getAnswer(data)])
         ];
       }
     },
     {
-      msg: 'Kurš no minētajiem mājdzīvniekiem šeit bija visvairāk?',
+      msg: 'Kurš no minētajiem mājdzīvniekiem šijā pilsētā/novadā bija visvairāk?',
       getAnswer (data = []) {
-        return 'Suņu'
+        return 'Suņi'
       },
       getAnswers (data = []) {
         const incorrect = [
-          'Kaķu', 'Sesku', 'Dinozauru', 'Papagaiļu', 'Trušu'
+          'Kaķi', 'Seski', 'Dinozauri', 'Papagaiļi', 'Truši'
         ];
         return [
-          this.getAnswer(),
-          ...getRandomAnswers(incorrect, [this.getAnswer()])
+          this.getAnswer(), ...getRandomAnswers(incorrect, [this.getAnswer()])
         ];
       }
     }

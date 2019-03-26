@@ -12,6 +12,7 @@ Chart.defaults.global.colors = [
     backgroundColor: 'rgb(214, 89, 167)'
   }
 ];
+
 Chart.defaults.global.type = 'bar';
 Chart.defaults.global.responsive = true;
 Chart.defaults.global.maintainAspectRatio = false;

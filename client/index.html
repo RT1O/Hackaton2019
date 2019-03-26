@@ -1,41 +1,60 @@
 <!DOCTYPE html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Toms Zvirbulis & Juris Ozoliņš">
-  <meta name="description" content="Olimps 3D - Atvērto Datu Hakatons 2019">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="author" content="Toms Zvirbulis & Juris Ozoliņš"/>
+  <meta name="description" content="Olimps 3D - Latvijas Skolu Atvērto Datu Hakatons 2019"/>
+  <meta http-equiv="cache-control" content="no-cache"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="-1"/>
 
   <title>Infografiks | Olimps 3D</title>
-  <link rel="icon" href="favicon.png" type="image/x-icon">
-  <script src="./data/config.js"></script>
+  <link rel="icon" href="favicon.png" type="image/x-icon"/>
 
-  <!--
-  Nepiciešamie stili:
-  -->
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&amp;subset=latin-ext" rel="stylesheet">
-  <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-  <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-  <link href="./leaflet/leaflet.css" rel="stylesheet" type="text/css">
-  <link href="./style.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&amp;subset=latin-ext" rel="stylesheet"/>
+  <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"/>
+  <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+  <link href="./leaflet/leaflet.css" rel="stylesheet" type="text/css"/>
+  <link href="./style.css" rel="stylesheet" type="text/css"/>
 
-  <!--
-  Nepieciešamais JavaScript:
-  -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
   <script src="./leaflet/leaflet.js"></script>
-  <script src="./js/utils.js"></script>
 
-  <!--
-  Nepiciešamie dati:
-  -->
+  <script src="./data/map.js"></script>
   <script src="./data/charts.js"></script>
-  <script src="./data/latviaMap.js"></script>
+  <script src="./data/config.js"></script>
+
+  <script src="./leaflet/marketcluster/dist/leaflet.markercluster.js"></script>
+  <link href="./leaflet/marketcluster/dist/MarkerCluster.css" rel="stylesheet" type="text/css"/>
+
+  <script src="./js/utils.js"></script>
 </head>
 
 <body>
+  <div class="modal fade" id="info-novads" tabIndex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title" id="label">Undefined novads</h6>
+        </div>
+        <div class="modal-body text-center">
+          <h2 class="mt-2 category-title"></h2>
+          <div class="row text-center">
+            <div class="col-12 col-md-6">
+              <div id="iedzivotaji-novads"></div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div id="dzimstiba-novads"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
     <a href="#" id="return-to-top"><i class="icon-chevron-up"></i></a>
 	  <a href="./game.html" class="p-3 mt-4 mb-4 btn btn-primary lg-btn btn-block" role="button">
@@ -139,6 +158,6 @@
     </div>
   </div>
 </body>
-<script src="./js/mapManager.js"></script>
-<script src="./js/chartRenderer.js"></script>
+<script src="./js/map.js"></script>
+<script src="./js/charts.js"></script>
 </html>

@@ -1,14 +1,20 @@
 const mapboxURL = 'https://api.mapbox.com/styles/v1/rt1o/cjtijj0di2p881fp5d8n8gs27/tiles/{z}/{x}/{y}?access_token=';
-
 function randInt(from, to) {
   return Math.floor(Math.random() * to) + from;
 }
 
-function getMap(id, coordinates, zoom) {
-  const map = L.map(id).setView(coordinates, zoom);
-  L.tileLayer(mapboxURL + config.mapbox.token, {
+function getMap(id, coordinates, zoom, url = null) {
+  const map = L.map(id, {
+    preferCanvas: true
+  }).setView(coordinates, zoom - 1);
+
+  L.tileLayer((url == null ? mapboxURL : url) + config.mapbox.token, {
     minZoom: zoom - 1
   }).addTo(map);
+
+  map.setMaxBounds(map.getBounds());
+  map.setZoom(zoom);
+
   return map;
 }
 
@@ -71,7 +77,7 @@ function getOpenData(source) {
 
 // Taken from the depths of the internet.
 function shuffleArray(a) {
-  var j, x, i;
+  let j, x, i;
   for (i = a.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1));
     x = a[i];
@@ -81,6 +87,22 @@ function shuffleArray(a) {
   return a;
 }
 
+
+// Another one of those mystery functions.
+function removeDiacritics (input) {
+  let output = "";
+  let normalized = input.normalize('NFD');
+  let i = 0;
+  let j = 0;
+  while (i < input.length) {
+    output += normalized[j];
+    j += (input[i] == normalized[j]) ? 1 : 2;
+    i++;
+  }
+  return output;
+}
+
+
 $(window).scroll(() => {
 	if ($(this).scrollTop() >= 50) {
 		$('#return-to-top').fadeIn(200);
@@ -88,6 +110,7 @@ $(window).scroll(() => {
 		$('#return-to-top').fadeOut(200);
 	}
 });
+
 $('#return-to-top').click(() => {
 	$('body, html').animate({
 		scrollTop: 0

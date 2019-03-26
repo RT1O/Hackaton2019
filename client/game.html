@@ -3,38 +3,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Toms Zvirbulis & Juris Ozoliņš">
-  <meta name="description" content="Olimps 3D - Atvērto Datu Hakatons 2019">
+  <meta name="description" content="Olimps 3D - Latvijas Skolu Atvērto Datu Hakatons 2019">
+  <meta http-equiv="cache-control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="-1" />
 
-  <title>Viktorīnas Spēle | Olimps 3D</title>
+  <title>Viktorīna | Olimps 3D</title>
   <link rel="icon" href="favicon.png" type="image/x-icon">
 
-  <script src="./data/config.js"></script>
-
-  <!--
-  Nepiciešamie stili:
-  -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&amp;subset=latin-ext" rel="stylesheet">
   <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
   <link href="./leaflet/leaflet.css" rel="stylesheet" type="text/css">
   <link href="./style.css" rel="stylesheet" type="text/css">
 
-  <!--
-  Nepieciešamais JavaScript:
-  -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="./bootstrap/js/bootstrap.min.js"></script>
   <script src="./leaflet/leaflet.js"></script>
-  <script src="./js/utils.js"></script>
 
-  <!--
-  Nepiciešamie dati:
-  -->
-  <script src="./data/gameData.js"></script>
-  <script src="./data/latviaMap.js"></script>
+  <script src="./data/config.js"></script>
+  <script src="./data/game.js"></script>
+  <script src="./data/map.js"></script>
+
+  <script src="./js/utils.js"></script>
 </head>
 
 <body>
+  <div class="modal fade show" id="info-modal" tabIndex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <h2>Liepāja</h2>
+          <button id="later" type="button" class="btn btn-danger">Vēlāk</button>
+          <button id="play" type="button" class="btn btn-success">Spēlēt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal fade" id="novada-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
 	    <div class="modal-content">
@@ -116,5 +122,5 @@
     </div>
   </div>
 </body>
-<script src="./js/gameManager.js"></script>
+<script src="./js/game.js"></script>
 </html>
