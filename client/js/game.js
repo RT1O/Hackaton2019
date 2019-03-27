@@ -56,6 +56,22 @@ const game = {
 const awardedPoints = [100, 200, 300, 400];
 
 const map = getMap('game-map', [56.946285, 24.105078], 7);
+
+var CurrentN;
+var polylines;
+var Path = Array();
+const lineColors = [
+  'rgb(0, 0, 100)',
+  'rgb(100, 100, 150)',
+];
+
+map.on("overlayadd", function (event) {
+  polylines.bringToFront();
+  for (i in Path) {
+    Path[i].bringToFront();
+  }
+})
+
 const mapOptions = {
   style: (feature, properties) => {
     return {
@@ -65,7 +81,20 @@ const mapOptions = {
       fillOpacity: 1.0
     };
   },
+
   onClick: (event, layer, feature) => {
+    if (feature.properties.diff > 0){
+     if(typeof polylines !== 'undefined'){
+        var latlngs = Array();
+
+        latlngs.push([CurrentN.properties.Latitude, CurrentN.properties.Longitude]);
+        latlngs.push([feature.properties.Latitude, feature.properties.Longitude]);
+
+        Path.push(L.polyline(latlngs, {color: lineColors[1]}).addTo(map));
+      }
+      CurrentN = feature;
+    }
+
     const properties = feature.properties;
     const diff = properties.diff;
     const novadaModal = $('#novada-modal');
@@ -78,13 +107,18 @@ const mapOptions = {
       for (i in map._layers) {
         if (map._layers[i].options.format == undefined && map._layers[i]._url == undefined) {
           try {
-            map.removeLayer(map._layers[i]);
+            if(map._layers[i].options.color !== lineColors[1]){
+              map.removeLayer(map._layers[i]);
+            }
           } catch (err) {
             console.log("Problem with removing:  " + e  + ":" + map._layers[i]);
           }
         }
       }
       setMapData(map, mapData, mapOptions);
+      for (i in Path) {
+        Path[i].bringToFront();
+      }
     }
 
     function endQuestion() {
@@ -220,6 +254,24 @@ const mapOptions = {
         weight: 4,
         fillOpacity: 1.0
       });
+    }
+    for (i in Path) {
+      Path[i].bringToFront();
+    }
+    if (feature.properties.diff > 0){
+      if(typeof CurrentN !== 'undefined'){
+
+        if(typeof polylines !== 'undefined'){
+          map.removeLayer(polylines);
+        }
+      
+        var latlngs = Array();
+
+        latlngs.push([CurrentN.properties.Latitude, CurrentN.properties.Longitude]);
+        latlngs.push([feature.properties.Latitude, feature.properties.Longitude]);
+      
+        polylines = L.polyline(latlngs, {color: lineColors[0]}).addTo(map);
+      }
     }
   }
 };

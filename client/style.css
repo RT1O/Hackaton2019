@@ -72,6 +72,19 @@ h1, h2, h3, h4, h5 {
   background-color: rgb(191, 199, 0) !important;
 }
 
+.info-tutorial{
+  z-index: 1;
+  top: 0;
+  position: relative;
+  text-align: left;
+  border-color: #003142 !important;
+  background-color: white !important;
+}
+
+.info-tutorial:hover {
+  background-color: whitesmoke !important;
+}
+
 @media only screen and (max-width: 1200) {
   .container {
     max-width: 768px;
