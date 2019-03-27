@@ -1,0 +1,24 @@
+﻿
+Esi sveicināts mūsu spēles prototipā! Spēles laikā tu iejutīsies Latvijas apceļotāja lomā, un tavs mērķis būs iegūt pēc iespējas vairāk punktu līdz spēles beigām.
+
+Spēle ilgst <dienu_skaits> dienas. //Izcelts ekrāna labais augšējais stūris, kurā atrodas gājienu skaits un pulkstenis.
+
+Spēlse laikā tu pārvietosies noviena konkursa uz otru, atbildot uz jautājumiemun pelnot punktus.
+
+Tu sastapsi četras grūtības pakāpes konkursus, kas kartē ir apzīmēti ar šādām krāsām:
+Zaļš - Viegli jautājumi.
+Oranžs - Vidēji grūti jautājumi.
+Sakans - Sarežģīti jautājumi.
+Violets - Visgrūtākie jautājumi.
+
+Atceries! Jo lielāka konkursa grūtības pakāpe, jo retāks ir konkurss un jo vairāk punktu tas dod.
+
+Katrs konkurss ilgst tieši vienu dienu, kuras laikā tu vari piedalīties un iegūt punktus.
+Virs konkursa tu vari redzēt pēc cik dienām tas sāksies //Tiek izcelts kāda konkursa timeris
+
+Spēles pēdējā dienā atvērsies violetais konkurss, kas dod visvairāk punktu, tāpēc nenokavē to!//Tiek izcelts violetais konkurss
+
+Lai sāktu spēli, uzklikšķini uz kāda no iekrāsotajiem novadiem!
+
+Uzklikšķini uz novadu, kur vēlies doties.
+Atceries! Jo vair;ak laika tu pavadi ceļā, jo uz mazāk konkursiem tu tiec.
