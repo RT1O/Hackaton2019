@@ -3,6 +3,10 @@ const map = getMap('region-map', [56.946285, 24.105078], 7, mapboxUrl);
 
 let geoJson, legend;
 
+// "Only the pureheart can witness his power."
+//   ~ Forggoten Namesake
+// (https://twitter.com/i/status/1097046364695994368)
+
 const markerClusterDefaults = {
   spiderfyOnMaxZoom: false,
 	showCoverageOnHover: false,
@@ -65,11 +69,13 @@ const mapOptions = {
     };
   },
   onClick: (event, layer, feature) => {
+    /*
     $('#info-novads')
       .modal()
       .show();
     $('#info-novads #label')
       .text(feature.properties.id);
+    */
   },
   onMouseOver: (event, layer, feature) => {
     layer.setStyle({
@@ -157,11 +163,10 @@ $('document').ready(() => {
   $('#novadu-checkbox').change(() => {
     const checked = !$('#novadu-checkbox').is(':checked');
 
-    $('#map-dropdown .dropdown-item').removeClass('active');
-    $('#default-novadi').addClass('active');
-
     if (!checked) {
-      geoJson = setMapData(map, konturas, mapOptions);
+      if (legend != null)
+        legend.addTo(map);
+      geoJson = setMapData(map, geoJson.toGeoJSON(), mapOptions);
     } else {
       removeLegend();
       map.removeLayer(geoJson);
@@ -171,6 +176,7 @@ $('document').ready(() => {
 
   $('#default-novadi').click(() => {
     removeLegend();
+    legend = null;
 
     $('#map-dropdown .dropdown-item').removeClass('active');
     $('#default-novadi').addClass('active');
@@ -180,6 +186,8 @@ $('document').ready(() => {
   });
 
   $('#algas-novadi').click(() => {
+    $('#novadu-checkbox').attr('checked', true);
+
     $('#map-dropdown .dropdown-item').removeClass('active');
     $('#algas-novadi').addClass('active');
 

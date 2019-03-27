@@ -72,7 +72,7 @@ const mapOptions = {
 
     const novadaModal = $('#novada-modal');
 
-    function updateTheMap() {
+    function update() {
       mapData.forEach((f, i) => {
         if (f.properties.id == properties.id)
           mapData[i].properties.completed = true;
@@ -81,18 +81,16 @@ const mapOptions = {
       geoJson = setMapData(map, mapData, mapOptions);
     }
 
-    function endQuestion() {
+    function endQuestionTurn() {
       novadaModal.modal('toggle');
 
       game.currentTurn += 1;
       game.currentPoints = 0;
 
-      $('#current-turn')
-        .text(game.currentTurn);
-      $('#current-points')
-        .text(game.currentPoints);
+      $('#current-turn').text(game.currentTurn);
+      $('#current-points').text(game.currentPoints);
 
-      updateTheMap();
+      update();
     }
 
     function unbindClickEvent() {
@@ -101,11 +99,11 @@ const mapOptions = {
       }
     }
 
-    async function openQuestion() {
-      if (game.currentQuestion >= 2)
+    function openQuestion(generatedQuestions, currentQuestion = 0) {
+      if (currentQuestion >= 2)
         $('#next').text('Pabeigt');
 
-      const question = game.questions[game.currentQuestion];
+      const question = generatedQuestions[currentQuestion];
 
       if (question == null)
         return;
@@ -115,68 +113,63 @@ const mapOptions = {
         keyboard: false
       }).show();
 
-      novadaModal.find('#label')
-        .text(properties.id);
-      novadaModal.find('#question')
-        .text(question.msg);
+      novadaModal.find('#label').text(properties.id);
+      novadaModal.find('#question').text(question.msg);
 
-      let data = [];
+      function prepareQuestion(data) {
+        let correctAnswer = question.getAnswer(properties.id, data);
 
-      if (typeof question.source != 'undefined')
-        data = await getOpenData(question.source).then((r) => r);
+        if (question.hasOwnProperty('suffix'))
+          correctAnswer += question.suffix;
 
-      const answers = shuffleArray(question.getAnswers(properties.id, data));
-      const correctAnswer = question.getAnswer(properties.id, data);
+        const everyAnswer = shuffleArray(question.getAnswers(properties.id, data));
 
-      for (let i = 0; i < 4; i++) {
-        novadaModal
-          .find('#answer' + i)
-          .removeClass('btn-danger btn-success')
-          .addClass('btn-light');
-      }
+        const endButton  = $('#end');
+        const nextButton = $('#next');
 
-      const endButton = novadaModal.find('#end');
-
-      endButton.unbind('click');
-      endButton
-        .click(() => {
+        endButton.unbind('click');
+        endButton.click(() => {
           unbindClickEvent();
-          endQuestion();
+          endQuestionTurn();
         });
 
-      const nextButton = novadaModal.find('#next');
+        if (!nextButton.hasClass('disabled'))
+          nextButton.addClass('disabled');
 
-      if (!nextButton.hasClass('disabled'))
-        nextButton.addClass('disabled');
-
-      nextButton.unbind('click');
-      nextButton
-        .click(() => {
+        nextButton.unbind('click');
+        nextButton.click(() => {
           if (nextButton.hasClass('disabled'))
             return;
+
           unbindClickEvent();
 
-          if (game.currentQuestion >= 2)
-            endQuestion();
+          if (currentQuestion >= 2) {
+            endQuestionTurn();
+          } else {
+            openQuestion(generatedQuestions, currentQuestion + 1);
+          }
+         });
 
-          game.currentQuestion += 1;
+        for (let i = 0; i < 4; i++) {
+          const currentAnswer = everyAnswer[i];
+          const answerElem = novadaModal.find('#answer' + i);
 
-          openQuestion();
-        });
+          answerElem.removeClass('btn-danger btn-success').addClass('btn-light');
 
-      for (let i = 0; i < 4; i++) {
-        const currentAnswer = answers[i];
-        const answerElem = novadaModal.find('#answer' + i);
-
-        answerElem.text(currentAnswer);
-        answerElem
-          .click(() => {
-
+          answerElem.text(currentAnswer);
+          answerElem.click(() => {
             const isCorrect = currentAnswer == correctAnswer;
             const pointsGained = (isCorrect ? awardedPoints[diff - 1] + game.pointBonus : 0);
 
             nextButton.removeClass('disabled');
             answerElem.removeClass('btn-light');
+
+            if (!isCorrect) {
+              game.pointBonus = 0;
+              $('#answer' + everyAnswer.indexOf(correctAnswer))
+                .removeClass('btn-light')
+                .addClass('btn-success');
+            }
 
             answerElem.addClass(isCorrect ? 'btn-success' : 'btn-danger');
 
@@ -190,25 +183,39 @@ const mapOptions = {
 
             if (answerElem.has('strong'))
               answerElem.find('strong').remove();
-            answerElem.append(`<strong> +${pointsGained}</strong>`);
+            answerElem.append(`<strong> +${ pointsGained }</strong>`);
 
             unbindClickEvent();
           });
+        }
+      }
+
+      if (question.hasOwnProperty('source')) {
+        getOpenData(question.source)
+          .then((result) => {
+            prepareQuestion(result);
+          });
+      } else {
+        prepareQuestion([
+          // ...
+        ]);
       }
     }
 
     if (properties.diff > 0 && !properties.completed) {
       $('#next').text('Nākamais');
 
-      game.questions = [
-        questions[0][randInt(0, questions[0].length)],
-        questions[0][randInt(0, questions[0].length)],
-        questions[0][randInt(0, questions[0].length)]
-      ];
-
-      game.currentQuestion = 0;
-
-      openQuestion();
+      function generateQuestions(diff, amt = 3) {
+        const generated = [];
+        while (generated.length < amt) {
+          const q = questions[diff][randInt(0, questions[diff].length)];
+          if (generated.includes(q))
+            continue;
+          generated.push(q);
+        }
+        return generated;
+      }
+      openQuestion(generateQuestions(0, 3));
     }
   },
   onMouseOver: (event, layer, feature) => {
