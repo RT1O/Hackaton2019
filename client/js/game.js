@@ -158,6 +158,28 @@ const mapOptions = {
     function endQuestionTurn() {
       novadaModal.modal('toggle');
 
+      if (game.currentTurn == 1) {
+        if (_.indexOf('?') == -1){
+          $('#info-modal').modal({
+            backdrop: 'static',
+            keyboard: false
+          }).show();
+          $('#info-modal p').remove();
+          $('#info-modal .modal-body').html(`
+            <h4>Atceries!</h4>
+            <hr>
+            <p>
+              Jo īsāku ceļu tu veic starp konkursiem, jo vairāk papildpunktus tu saņem.
+            </p>
+            <hr>
+            <button id="start-game" type="button" class="btn lg-btn btn-block btn-success mr-2">Turpināt</button>
+          `);
+          $('#info-modal #start-game').click(() => {
+            $('#info-modal').modal('toggle');
+          });
+        }
+      }
+
       game.currentTurn += 1;
       game.currentPoints = 0;
 
