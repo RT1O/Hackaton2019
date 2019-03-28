@@ -406,6 +406,24 @@ const mapOptions = {
 
 geoJson = setMapData(map, mapData, mapOptions);
 
+const _ = window.location.href;
+
+if (_.indexOf('?') == -1){
+  $('#info-modal').modal({
+    backdrop: 'static',
+    keyboard: false
+  }).show();
+  $('#info-modal #start-game').click(() => {
+    $('#info-modal').modal('toggle');
+  });
+}
+
 $('#restart-game').click(() => {
-  location.reload();
+  var url = window.location.href;
+  if (url.indexOf('?') > -1){
+    // ...
+  } else{
+    url += '?tutorial=1'
+  }
+  window.location.href = url;
 });
