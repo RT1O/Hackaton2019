@@ -10,6 +10,15 @@ const colors = [
   'rgb(121, 86, 135)'
 ];
 
+const lineColors = [
+  'rgb(0, 0, 100)', //Savieno vienu novadu ar potencialu novadu
+  'rgb(255, 255, 255)', //Savieno apmekletos novadus
+];
+
+var CurrentN;
+var latlngs = Array();
+var Path = Array();
+
 const markers = [];
 const maxTurns = 15;
 
@@ -101,6 +110,13 @@ function getColor(properties) {
 }
 
 const map = getMap('game-map', [56.946285, 24.105078], 7);
+
+map.on("overlayadd", function (event) {
+  for (i in Path) {
+    Path[i].bringToFront();
+  }
+})
+
 const mapOptions = {
   style: (feature, properties) => {
     return {
@@ -111,6 +127,18 @@ const mapOptions = {
     };
   },
   onClick: (event, layer, feature) => {
+
+    if (feature.properties.diff > 0){
+      if(typeof CurrentN !== 'undefined'){
+        latlngs.push([CurrentN.properties.Latitude, CurrentN.properties.Longitude]);
+        latlngs.push([feature.properties.Latitude, feature.properties.Longitude]);
+ 
+        Path.push(L.polyline(latlngs, {color: lineColors[1], dashArray: '20, 20', dashOffset: '0'}, ).addTo(map));
+      }
+      CurrentN = feature;
+    }
+ 
+
     const properties = feature.properties;
     const diff = properties.diff;
 
@@ -123,6 +151,7 @@ const mapOptions = {
       });
       map.removeLayer(geoJson);
       geoJson = setMapData(map, mapData, mapOptions);
+      L.polyline(latlngs, {color: lineColors[1], dashArray: '20, 20', dashOffset: '0'}).addTo(map);
     }
 
     function endQuestionTurn() {
@@ -326,6 +355,9 @@ const mapOptions = {
         weight: 4,
         fillOpacity: 1.0
       });
+    }
+    for (i in Path) {
+      Path[i].bringToFront();
     }
   },
   onMouseOut: (event, layer, feature) => {
