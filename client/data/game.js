@@ -75,8 +75,39 @@ const questions = {
         ];
       }
     },
-  ],
-  '1': [
+    {
+      msg: 'Cik daudz laulības tika slēgtas šajā novadā 2017.gada beigās?',
+	    source: 'slegtas_laulibas_novados',
+      getAnswer (id, data) {
+        return getNovadaData(id, data);
+      },
+      getAnswers (id, data) {
+        const answer = this.getAnswer(id, data);
+        return [
+          answer,
+          parseInt(answer * randInt(110, 135) / 100),
+          parseInt(answer * randInt(50, 75) / 100),
+          parseInt(answer * randInt(75, 90) / 100)
+        ];
+      }
+    },
+    {
+      msg: 'Kāda bija dzimstība (uz 1000 iedzīvotājiem) šajā novadā 2018.gada beigās?',
+      source: 'dzimstiba_novados',
+      suffix: '',
+      getAnswer (id, data) {
+        return getNovadaData(id, data);
+      },
+      getAnswers (id, data) {
+        const answer = this.getAnswer(id, data);
+        return [
+          answer,
+          round(answer * 0.75, 1),
+          round(answer * 1.25, 1),
+          round(answer * 0.85, 1)
+        ];
+      }
+    },
     {
       msg: 'Cik tūkst. mājokļu bija šajā novadā 2009.gada beigās?',
       source: 'majoklu_skaits_novados',
@@ -128,58 +159,8 @@ const questions = {
       }
     }
   ],
-  '2': [
-    {
-      msg: 'Cik daudz laulības tika slēgtas šajā novadā 2017.gada beigās?',
-	    source: 'slegtas_laulibas_novados',
-      getAnswer (id, data) {
-        return getNovadaData(id, data);
-      },
-      getAnswers (id, data) {
-        const answer = this.getAnswer(id, data);
-        return [
-          answer,
-          parseInt(answer * randInt(110, 135) / 100),
-          parseInt(answer * randInt(50, 75) / 100),
-          parseInt(answer * randInt(75, 90) / 100)
-        ];
-      }
-    },
-    {
-      msg: 'Kāda bija dzimstība (uz 1000 iedzīvotājiem) šajā novadā 2018.gada beigās?',
-      source: 'dzimstiba_novados',
-      suffix: '',
-      getAnswer (id, data) {
-        return getNovadaData(id, data);
-      },
-      getAnswers (id, data) {
-        const answer = this.getAnswer(id, data);
-        return [
-          answer,
-          round(answer * 0.75, 1),
-          round(answer * 1.25, 1),
-          round(answer * 0.85, 1)
-        ];
-      }
-    },
-    { // KOPIJA
-      msg: '2. Kāda bija dzimstība (uz 1000 iedzīvotājiem) šajā novadā 2018.gada beigās?',
-      source: 'dzimstiba_novados',
-      suffix: '',
-      getAnswer (id, data) {
-        return getNovadaData(id, data);
-      },
-      getAnswers (id, data) {
-        const answer = this.getAnswer(id, data);
-        return [
-          answer,
-          round(answer * 0.75, 1),
-          round(answer * 1.25, 1),
-          round(answer * 0.85, 1)
-        ];
-      }
-    },
-  ]
+  '1': [],
+  '2': []
 }
 
 /*

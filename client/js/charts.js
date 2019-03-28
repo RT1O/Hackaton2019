@@ -31,7 +31,7 @@ function getColors(index) {
 
 function renderChart(element, result, chart) {
   if (chart.amount > 0)
-    result = result.slice(result.length - amount, result.length);
+    result = result.slice(result.length - chart.amount, result.length);
   const chartData = {
     type: chart.type || Chart.defaults.global.type,
     data: {

@@ -53,5 +53,73 @@ const charts = [
         text: 'Mājdzīvnieki'
       }
     }
+  },
+  {
+    id: 'vieglais-transports',
+    source: 'transporti_latvija',
+    data: [
+      {
+        label: 'Vieglie automobiļi',
+        col: 'Vieglie automobiļi'
+      }
+    ]
+  },
+  {
+    id: 'smagais-transports',
+    source: 'transporti_latvija',
+    data: [
+      {
+        label: 'Kravas automobiļi (ieskaitot vilcējus)',
+        col: 'Kravas automobiļi (ieskaitot vilcējus)'
+      }
+    ]
+  },
+  {
+    id: 'autobusu-transports',
+    source: 'transporti_latvija',
+    data: [
+      {
+        label: 'Autobusi',
+        col: 'Autobusi'
+      }
+    ]
+  },
+  {
+    // type: 'line',
+    id: 'udens-transports',
+    source: 'transporti_latvija',
+    data: [
+      {
+        label: 'Kravas kuģi',
+        col: 'kravas kuģi'
+      },
+      {
+        label: 'Zvejas kuģi',
+        col: 'zvejas kuģi'
+      },
+      {
+        label: 'Pasažieru kuģi',
+        col: 'pasažieru kuģi'
+      }
+    ],
+    amount: 15,
+    /*options: {
+      fill: false,
+      pointRadius: 2
+    }*/
+  },
+  {
+    type: 'line',
+    id: 'dzelzscela-garums',
+    source: 'celu_garums',
+    data: [
+      {
+        label: 'Valsts dzelzceļa līnijas, km',
+        col: 'Valsts dzelzceļa līnijas'
+      }
+    ],
+    options: {
+      fill: false
+    }
   }
 ];

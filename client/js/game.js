@@ -72,7 +72,7 @@ function generateDifficulty(values) {
 }
 
 let geoJson;
-let mapData = generateDifficulty([20, 15, 10, 1]);
+let mapData = generateDifficulty([45, 35, 19, 1]);
 
 let currentMarkers = [];
 const game = {
@@ -81,7 +81,10 @@ const game = {
   currentPoints: 0,
   currentTurn: 1,
   currentQuestion: 0,
-  totalCorrect: 0
+  totalCorrect: 0,
+  perfectTurns: 0,
+  inARow: 0,
+  largestPointBonus: 0
 };
 const awardedPoints = [100, 200, 300, 400];
 
@@ -158,6 +161,10 @@ const mapOptions = {
         .text(game.totalCorrect);
       endModal.find('#total-answers')
         .text(maxTurns * 3);
+      endModal.find('#largest-point-bonus')
+        .text(game.largestPointBonus);
+      endModal.find('#perfect-turns')
+        .text(game.perfectTurns);
     }
 
     function openQuestion(generatedQuestions, currentQuestion = 0) {
@@ -232,12 +239,21 @@ const mapOptions = {
 
 
             if (!isCorrect) {
+              if (game.largestPointBonus < game.pointBonus)
+                game.largestPointBonus = game.pointBonus;
               game.pointBonus = 0;
               $('#answer' + everyAnswer.indexOf(correctAnswer))
                 .removeClass('btn-light')
                 .addClass('btn-success');
               answerElem.addClass('btn-danger');
             } else {
+              game.inARow += 1;
+
+              if (game.inARow >= 3) {
+                game.inARow = 0;
+                game.perfectTurns += 1;
+              }
+
               game.totalCorrect += 1;
               answerElem.addClass('btn-success');
             }
@@ -300,7 +316,7 @@ const mapOptions = {
         return generated;
       }
 
-      openQuestion(generateQuestions(properties.diff - 1, 3));
+      openQuestion(generateQuestions(0, 3));
       // });
     }
   },
