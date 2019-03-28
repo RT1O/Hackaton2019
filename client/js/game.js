@@ -10,11 +10,21 @@ const colors = [
   'rgb(121, 86, 135)'
 ];
 
+const markers = [];
+const maxTurns = 15;
+
 function generateDifficulty(values) {
-  const set = values.map((_) => 0);
+  let total = 0;
+
+  for (let v of values)
+    total += v;
+
+  const days = [];
+  const diffs = values.map((_) => 0);
   const final = shuffleArray(konturas.features.map((feature) => {
 
     feature.properties.diff = 0;
+    feature.properties.startsOn = 0;
     feature.properties.completed = false;
 
     if (requiredStates.includes(feature.properties.id))
@@ -23,38 +33,67 @@ function generateDifficulty(values) {
     return feature;
   }));
 
+  for (let x = 0; x < 15; x++) {
+    days[x] = 0;
+  }
+
   for (let x = 0; x < values.length; x++) {
-    while (set[x] < values[x]) {
+    while (diffs[x] < values[x]) {
       for (let i = 0; i < final.length; i++) {
         if (final[i].properties.diff > 0)
           continue;
         if (randInt(0, 100) > 80) {
-          if (set[x] >= values[x])
+          if (diffs[x] >= values[x])
             break;
-          set[x] += 1; final[i].properties.diff = (x + 1);
+
+          diffs[x] += 1;
+          final[i].properties.diff = (x + 1);
+
+          if (x == 3)
+            final[i].properties.startsOn = maxTurns;
         }
       }
+    }
+  }
+
+  let x = 0;
+
+  for (let i = 0; i < final.length; i++) {
+    if (final[i].properties.diff == 0 || final[i].properties.startsOn != 0)
+      continue;
+    if (x < maxTurns - 1) {
+      final[i].properties.startsOn = x + 1; x++;
+    } else {
+      final[i].properties.startsOn = parseInt(randInt(1, maxTurns - 1));
     }
   }
 
   return final;
 }
 
-function getColor(properties) {
-  return properties.completed ? 'rgb(120, 120, 120)' : colors[properties.diff % colors.length];
-}
-
 let geoJson;
-let mapData = generateDifficulty([15, 9, 5, 1]);
+let mapData = generateDifficulty([20, 15, 10, 1]);
 
+let currentMarkers = [];
 const game = {
   pointBonus: 0,
   totalPoints: 0,
   currentPoints: 0,
   currentTurn: 1,
-  currentQuestion: 0
+  currentQuestion: 0,
+  totalCorrect: 0
 };
 const awardedPoints = [100, 200, 300, 400];
+
+function getColor(properties) {
+  if (properties.diff == 0)
+    return colors[0];
+  if (properties.completed)
+    return 'rgb(120, 120, 120)';
+  if (properties.startsOn != game.currentTurn)
+    return colors[0];
+  return colors[properties.diff % colors.length];
+}
 
 const map = getMap('game-map', [56.946285, 24.105078], 7);
 const mapOptions = {
@@ -99,6 +138,26 @@ const mapOptions = {
       }
     }
 
+    function endTheGame() {
+      const endModal = $('#end-modal');
+
+      novadaModal.modal('toggle');
+      endModal.modal({
+        backdrop: 'static',
+        keyboard: false
+      }).show();
+
+      $(window).unbind('beforeunload');
+      $('body').addClass('stop-scrolling');
+
+      endModal.find('#total-points')
+        .text(game.totalPoints);
+      endModal.find('#correct-answers')
+        .text(game.totalCorrect);
+      endModal.find('#total-answers')
+        .text(maxTurns * 3);
+    }
+
     function openQuestion(generatedQuestions, currentQuestion = 0) {
       if (currentQuestion >= 2)
         $('#next').text('Pabeigt');
@@ -130,6 +189,9 @@ const mapOptions = {
         endButton.unbind('click');
         endButton.click(() => {
           unbindClickEvent();
+
+          if (game.currentTurn >= maxTurns)
+            return endTheGame();
           endQuestionTurn();
         });
 
@@ -144,6 +206,8 @@ const mapOptions = {
           unbindClickEvent();
 
           if (currentQuestion >= 2) {
+            if (game.currentTurn >= maxTurns)
+              return endTheGame();
             endQuestionTurn();
           } else {
             openQuestion(generatedQuestions, currentQuestion + 1);
@@ -159,26 +223,31 @@ const mapOptions = {
           answerElem.text(currentAnswer);
           answerElem.click(() => {
             const isCorrect = currentAnswer == correctAnswer;
-            const pointsGained = (isCorrect ? awardedPoints[diff - 1] + game.pointBonus : 0);
+            const pointsGained = isCorrect ? awardedPoints[diff - 1] + game.pointBonus : 0;
 
             nextButton.removeClass('disabled');
             answerElem.removeClass('btn-light');
+
 
             if (!isCorrect) {
               game.pointBonus = 0;
               $('#answer' + everyAnswer.indexOf(correctAnswer))
                 .removeClass('btn-light')
                 .addClass('btn-success');
+              answerElem.addClass('btn-danger');
+            } else {
+              game.totalCorrect += 1;
+              answerElem.addClass('btn-success');
             }
 
-            answerElem.addClass(isCorrect ? 'btn-success' : 'btn-danger');
+            // answerElem.addClass(isCorrect ? 'btn-success' : 'btn-danger');
 
-            game.pointBonus += isCorrect ? 25 : 0;
-            game.totalPoints += pointsGained;
+            game.pointBonus    += isCorrect ? 25 : 0;
+            game.totalPoints   += pointsGained;
             game.currentPoints += pointsGained;
 
             $('#point-bonus').text(game.pointBonus);
-            $('#total-points').text(game.totalPoints);
+            $('#total-game-points').text(game.totalPoints);
             $('#current-points').text(game.currentPoints);
 
             if (answerElem.has('strong'))
@@ -203,19 +272,34 @@ const mapOptions = {
     }
 
     if (properties.diff > 0 && !properties.completed) {
+      /*const infoModal = $('#info-modal').modal('show');
+
+      infoModal.find('#label').text(properties.id);
+
+      infoModal.find('#close-game').click(() => {
+        infoModal.modal('toggle');
+      });*/
+
+      //infoModal.find('#start-game').click(() => {
+      //  infoModal.modal('toggle');
+
       $('#next').text('Nākamais');
 
       function generateQuestions(diff, amt = 3) {
         const generated = [];
+
         while (generated.length < amt) {
           const q = questions[diff][randInt(0, questions[diff].length)];
           if (generated.includes(q))
             continue;
           generated.push(q);
         }
+
         return generated;
       }
+
       openQuestion(generateQuestions(0, 3));
+      // });
     }
   },
   onMouseOver: (event, layer, feature) => {
@@ -232,3 +316,7 @@ const mapOptions = {
 };
 
 geoJson = setMapData(map, mapData, mapOptions);
+
+$('#restart-game').click(() => {
+  location.reload();
+});

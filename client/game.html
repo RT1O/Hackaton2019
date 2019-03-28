@@ -28,13 +28,44 @@
 </head>
 
 <body>
+
   <div class="modal fade" id="info-modal" tabIndex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title" id="label"></h6>
+          <a class="close" data-dismiss="modal">×</a>
+        </div>
         <div class="modal-body text-center">
-          <h2>Liepāja</h2>
-          <button id="later" type="button" class="btn btn-danger">Vēlāk</button>
-          <button id="play" type="button" class="btn btn-success">Spēlēt</button>
+          <h4>Vai vēlies sākt viktorīnu par šo novadu/pilsētu?</h4>
+          <hr>
+          <button id="start-game" type="button" class="btn btn-success mr-2">Sākt</button>
+          <button id="close-game" type="button" class="btn btn-danger ml-2">Vēlāk</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="end-modal" tabIndex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <h3>Spēle ir beigusies!</h3>
+          <hr>
+          <p>
+            Jūs kopā ieguvāt <strong id='total-points'>0</strong> punktus.
+          </p>
+          <p>
+            Pareizi atbildējāt uz <strong id="correct-answers">0</strong> no <strong id="total-answers">15</strong> jautājumiem.
+          </p>
+          <p>
+            Lielākais punktu bonuss jums bija <strong id="largest-point-bonus">0</strong>.
+          </p>
+          <p>
+            Perfekti atbildējāt <strong>0</strong> novados.
+          </p>
+          <hr>
+          <button id="restart-game" type="button" class="btn btn-lg btn-block btn-success ml-2">Spēlēt Vēlreiz</button>
         </div>
       </div>
     </div>
@@ -85,7 +116,7 @@
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">Punkti</h5>
-              <p id="total-points" class="card-text">0</p>
+              <p id="total-game-points" class="card-text">0</p>
             </div>
           </div>
           <div class="card">
@@ -97,14 +128,14 @@
           <div class="card">
             <div class="card-body text-center">
               <h5 class="card-title">Gājiens</h5>
-              <p class="card-text"><span id="current-turn">1</span>/30</p>
+              <p class="card-text"><span id="current-turn">1</span>/15</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="col-12">
-        <div id="game-map" class="mt-4 game-map border rounded"></div>
+      <div class="col-12 mt-4">
+        <div id="game-map" class="game-map border rounded"></div>
       </div>
     </div>
 

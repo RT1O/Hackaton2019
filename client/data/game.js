@@ -94,17 +94,18 @@ const questions = {
     },
     {
       msg: 'Cik daudz mājokļu bija šajā novadā 2009.gada beigās?',
-	    source: 'majoklu_skaits_novados',
+      source: 'majoklu_skaits_novados',
+      suffix: ' tūkst.',
       getAnswer (id, data) {
-        return getNovadaData(id, data);
+        return round(getNovadaData(id, data) / 1000, 1);
       },
       getAnswers (id, data) {
         const answer = this.getAnswer(id, data);
         return [
-          answer,
-          parseInt(answer * randInt(110, 135) / 100),
-          parseInt(answer * randInt(50, 75) / 100),
-          parseInt(answer * randInt(75, 90) / 100)
+          answer + this.suffix,
+          round(answer * randInt(110, 135) / 100, 1) + this.suffix,
+          round(answer * randInt(50, 75) / 100, 1) + this.suffix,
+          round(answer * randInt(75, 90) / 100, 1) + this.suffix
         ];
       }
     },

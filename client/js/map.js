@@ -36,7 +36,7 @@ function getMarkerIcon(cluster, name) {
   });
 }
 
-const recycleMarkers = [];
+let recycleMarkers = [];
 const recycleCluster = L.markerClusterGroup({
   ...markerClusterDefaults,
 	iconCreateFunction: (cluster) => {
@@ -44,24 +44,13 @@ const recycleCluster = L.markerClusterGroup({
 	}
 });
 
-const pieturuMarkers = [];
+let pieturuMarkers = [];
 const pieturuCluster = L.markerClusterGroup({
   ...markerClusterDefaults,
 	iconCreateFunction: (cluster) => {
 		return getMarkerIcon(cluster, 'pieturu-marker');
 	}
 });
-
-function getColor(d, v = [10, 20, 50, 100, 200, 500, 1000]) {
-  return d > v[6] ? '#800026' :
-         d > v[5] ? '#BD0026' :
-         d > v[4] ? '#E31A1C' :
-         d > v[3] ? '#FC4E2A' :
-         d > v[2] ? '#FD8D3C' :
-         d > v[1] ? '#FEB24C' :
-         d > v[0] ? '#FED976' :
-                    '#FFEDA0';
-}
 
 const mapOptions = {
   style: (feature, properties) => {
@@ -97,6 +86,10 @@ const mapOptions = {
   }
 }
 
+function isChecked(elemId) {
+  return !$('#' + elemId).is(':checked');
+}
+
 function removeInfo() {
   if (info != null)
     map.removeControl(info);
@@ -107,11 +100,24 @@ function removeLegend() {
     map.removeControl(legend);
 }
 
+function getColor(value, grades = [10, 20, 50, 100, 200, 500, 1000]) {
+  return value > grades[6] ? '#800026' :
+         value > grades[5] ? '#BD0026' :
+         value > grades[4] ? '#E31A1C' :
+         value > grades[3] ? '#FC4E2A' :
+         value > grades[2] ? '#FD8D3C' :
+         value > grades[1] ? '#FEB24C' :
+         value > grades[0] ? '#FED976' :
+                             '#FFEDA0';
+}
+
 function addInfo() {
   removeInfo();
   info = L.control();
   info.update = (props) => {
-    this._div.innerHTML = (props ? '<b>' + props.name + '</b><br>' + props.value : 'Uzliec kursoru virs novada, lai redzētu papildinformāciju.');
+    this._div.innerHTML = (props
+      ? '<b>' + props.name + '</b><br>' + props.value
+      : 'Uzliec kursoru virs novada, lai redzētu papildinformāciju.');
   };
   info.onAdd = (map) => {
     this._div = L.DomUtil.create('div', 'info');
@@ -128,82 +134,146 @@ function addLegend(grades, suffix = '') {
   });
   legend.onAdd = (map) => {
     const div = L.DomUtil.create('div', 'info legend');
-    // div.innerHtml = `<i style="background: ${getColor(12312, v = grades)}"></i>`;
     for (let i = 0; i < grades.length; i++)
-      div.innerHTML += `<i style="background: ${getColor(grades[i] + 1, v = grades)}"></i>
-        ${grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + suffix + '<br>' : '+' + suffix)}`;
+      div.innerHTML += `
+      <i style="background: ${getColor(grades[i] + 1, v = grades)}"></i>
+      ${grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + suffix + '<br>' : '+' + suffix)}`;
     return div;
   };
   legend.addTo(map);
 }
 
-$('document').ready(() => {
-  getOpenData('skiroviegli_viss')
-    .then((result) => {
-      result.forEach((r) => {
-        const pos = r['Koordinātas'].split(', ');
+function getMarkersFromData(source, callback, color = 'green') {
+  const markers = [];
+  getOpenData(source)
+    .then((results) => {
+      results.forEach((result) => {
         try {
-          recycleMarkers.push(
-            L.marker([
-              parseFloat(pos[0]),
-              parseFloat(pos[1])
-            ], {
-              icon: getIcon('green')
+          markers.push(
+            L.marker(callback(result), {
+              icon: getIcon(color)
             }));
-        } catch(err) {
+        } catch (err) {
           // ...
         }
       });
-      map.addLayer(recycleCluster);
+    }).catch((err) => {
+      // ...
     });
+  return markers;
+}
 
-  getOpenData('autobusu_pieturvietas')
-    .then((result) => {
-      result.forEach((r) => {
-        try {
-          pieturuMarkers.push(
-            L.marker([
-              parseFloat(r['Platums']),
-              parseFloat(r['Garums'])
-            ], {
-              icon: getIcon('blue')
-            }));
-        } catch(err) {
-          // ... cheeky errors, BEGONE
-        }
-      });
-      map.addLayer(pieturuCluster);
+function addStateButton(elemId, source, options = {}) {
+  const elem = $('#' + elemId);
+  const errElemId = options.errElemId || 'error-alert-map';
+
+  const suffix = options.suffix || '';
+  const grades = options.grades || [1, 2, 3, 4, 5, 6, 7];
+  const label = options.label ? ' ' + options.label : '';
+
+  const hasInfo = options.info || true;
+  const hasLegend = options.legend || true;
+
+  const roundTo = options.roundTo || 0;
+
+  function getValue (value) {
+    if (options.hasOwnProperty('getValue'))
+      return options.getValue(value);
+    return value;
+  }
+
+  getOpenData(source, errElemId)
+    .then((results) => {
+      // Ieslēdz novadu redzamību.
+      $('#novadu-checkbox')
+        .prop('checked', true);
+
+      // Uzliek kā 'active' linku.
+      $('#map-dropdown .dropdown-item')
+        .removeClass('active');
+      elem.addClass('active');
+
+      if (hasInfo)
+        addInfo();
+
+      if (hasLegend)
+        addLegend(grades, suffix);
+
+      // Izveido jaunos kartes datus, pēc dotajiem .csv datiem.
+      const newMapData = (() => {
+        const mapData = [];
+
+        konturas.features.forEach((feature) => {
+          results.forEach((result) => {
+            Object.keys(result).forEach((key) => {
+              if (key == feature.properties.id) {
+                const value = getValue(result[key]);
+                const newFeature = Object.assign({}, feature, {
+                  properties: {
+                    name: feature.properties.id,
+                    value: round(value, roundTo) + suffix + label,
+                    color: getColor(value, grades)
+                  }
+                });
+                mapData.push(newFeature);
+              }
+            });
+          });
+        });
+
+        return mapData;
+      })();
+
+      // Uzliek jaunos datus uz kartes.
+      map.removeLayer(geoJson);
+      geoJson = setMapData(map, newMapData, mapOptions);
+    })
+    .catch((err) => {
+      console.log('Kļūme pie - ', source, err);
     });
+}
+
+$('document').ready(() => {
+  $('#novadu-checkbox').change(() => {
+    if (!isChecked('novadu-checkbox')) {
+      if (legend != null)
+        legend.addTo(map);
+      if (info != null)
+        info.addTo(map);
+      geoJson = setMapData(map, geoJson.toGeoJSON(), mapOptions);
+    } else {
+      removeInfo();
+      removeLegend();
+      map.removeLayer(geoJson);
+    }
+  });
+
+  map.addLayer(recycleCluster);
+
+  recycleMarkers = getMarkersFromData('skiroviegli_viss', (result) => {
+    const pos = result['Koordinātas'].split(', ');
+    return [parseFloat(pos[0]), parseFloat(pos[1])];
+  }, 'green');
 
   $('#recycle-checkbox').change(() => {
-    const checked = !$('#recycle-checkbox').is(':checked');
-    if (!checked) {
+    if (!isChecked('recycle-checkbox')) {
       recycleCluster.addLayers(recycleMarkers);
     } else {
       recycleCluster.removeLayers(recycleMarkers);
     }
   });
 
-  $('#pieturas-checkbox').change(() => {
-    const checked = !$('#pieturas-checkbox').is(':checked');
+  map.addLayer(pieturuCluster);
 
-    if (!checked) {
+  pieturuMarkers = getMarkersFromData('autobusu_pieturvietas', (result) => {
+    return [parseFloat(result['Platums']), parseFloat(result['Garums'])];
+  }, 'blue');
+
+  $('#pieturas-checkbox').change(() => {
+    if (!isChecked('pieturas-checkbox')) {
       pieturuCluster.addLayers(pieturuMarkers);
     } else {
       pieturuCluster.removeLayers(pieturuMarkers);
-    }
-  });
-
-  $('#novadu-checkbox').change(() => {
-    const checked = !$('#novadu-checkbox').is(':checked');
-
-    if (!checked) {
-      if (legend != null)
-        legend.addTo(map);
-      geoJson = setMapData(map, geoJson.toGeoJSON(), mapOptions);
-    } else {
-      removeLegend();
-      map.removeLayer(geoJson);
     }
   });
 
@@ -214,7 +284,8 @@ $('document').ready(() => {
     info = null;
     legend = null;
 
-    $('#map-dropdown .dropdown-item').removeClass('active');
+    $('#map-dropdown .dropdown-item')
+      .removeClass('active');
     $('#default-novadi').addClass('active');
 
     map.removeLayer(geoJson);
@@ -222,216 +293,56 @@ $('document').ready(() => {
   });
 
   $('#algas-novadi').click(() => {
-    const grades = [550, 650, 750, 850, 950, 1050, 1150];
-
-    getOpenData('alga_novados', 'error-alert-map')
-      .then((result) => {
-        $('#novadu-checkbox').prop('checked', true);
-
-        $('#map-dropdown .dropdown-item').removeClass('active');
-        $('#algas-novadi').addClass('active');
-
-        addInfo();
-        addLegend(grades, suffix = '€');
-
-        map.removeLayer(geoJson);
-        geoJson = setMapData(map, (() => {
-          const final = [];
-          konturas.features.forEach((f) => {
-            result.forEach((r) => {
-              Object.keys(r).forEach((k) => {
-                if (k == f.properties.id)
-                  final.push(Object.assign({}, f, {
-                    properties: {
-                      name: f.properties.id,
-                      value: r[k] + '€',
-                      color: getColor(r[k], v = grades),
-                    }
-                  }));
-              });
-            });
-          });
-          return final;
-        })(), mapOptions);
-      }).catch((err) => {
-        console.log(err);
-      })
+    addStateButton('algas-novadi', 'alga_novados', {
+      suffix: '€',
+      grades: [550, 650, 750, 850, 950, 1050, 1150]
+    });
   });
 
   $('#population-novadi').click(() => {
-    const grades = [5, 10, 20, 50, 100, 250, 500];
-
-    getOpenData('iedzivotaju_skaits_novados', 'error-alert-map')
-      .then((result) => {
-        $('#novadu-checkbox').prop('checked', true);
-
-        $('#map-dropdown .dropdown-item').removeClass('active');
-        $('#population-novadi').addClass('active');
-
-        addInfo();
-        addLegend(grades, suffix = ' tūkst.');
-
-        map.removeLayer(geoJson);
-        geoJson = setMapData(map, (() => {
-          const final = [];
-          konturas.features.forEach((f) => {
-            result.forEach((r) => {
-              Object.keys(r).forEach((k) => {
-                if (k == f.properties.id)
-                  final.push(Object.assign({}, f, {
-                    properties: {
-                      name: f.properties.id,
-                      value: round(r[k] / 1000, 1) + ' tūkst. iedzīvotāji',
-                      color: getColor(r[k] / 1000, v = grades)
-                    }
-                  }));
-              });
-            });
-          });
-          return final;
-        })(), mapOptions);
-      }).catch((err) => {
-        console.log(err);
-      })
+    addStateButton('population-novadi', 'iedzivotaju_skaits_novados', {
+      label: 'iedzīvotāji',
+      suffix: ' tūkst.',
+      grades: [5, 10, 20, 50, 100, 250, 500],
+      roundTo: 1,
+      getValue: (value) => {
+        return value / 1000
+      }
+    });
   });
 
   $('#noziegumi-novadi').click(() => {
-    const grades = [100, 200, 300, 400, 500, 600, 700];
-
-    getOpenData('noziedzigie_nodarijumi_novados', 'error-alert-map')
-      .then((result) => {
-        $('#novadu-checkbox').prop('checked', true);
-
-        $('#map-dropdown .dropdown-item').removeClass('active');
-        $('#noziegumi-novadi').addClass('active');
-
-        addInfo();
-        addLegend(grades, suffix = '');
-
-        map.removeLayer(geoJson);
-        geoJson = setMapData(map, (() => {
-          const final = [];
-          konturas.features.forEach((f) => {
-            result.forEach((r) => {
-              Object.keys(r).forEach((k) => {
-                if (k == f.properties.id)
-                  final.push(Object.assign({}, f, {
-                    properties: {
-                      name: f.properties.id,
-                      value: r[k] + ' noziegumi',
-                      color: getColor(r[k], v = grades)
-                    }
-                  }));
-              });
-            });
-          });
-          return final;
-        })(), mapOptions);
-      }).catch((err) => {
-        console.log(err);
-      })
+    addStateButton('noziegumi-novadi', 'noziedzigie_nodarijumi_novados', {
+      label: 'noziegumi',
+      grades: [100, 200, 300, 400, 500, 600, 700]
+    });
   });
 
   $('#housing-novadi').click(() => {
-    const grades = [1, 5, 10, 15, 30, 50, 100];
-
-    getOpenData('majoklu_skaits_novados', 'error-alert-map')
-      .then((result) => {
-        $('#novadu-checkbox').prop('checked', true);
-
-        $('#map-dropdown .dropdown-item').removeClass('active');
-        $('#housing-novadi').addClass('active');
-
-        addInfo();
-        addLegend(grades, suffix = ' tūkst.');
-
-        map.removeLayer(geoJson);
-        geoJson = setMapData(map, (() => {
-          const final = [];
-          konturas.features.forEach((f) => {
-            result.forEach((r) => {
-              Object.keys(r).forEach((k) => {
-                if (k == f.properties.id)
-                  final.push(Object.assign({}, f, {
-                    properties: {
-                      name: f.properties.id,
-                      color: getColor(r[k] / 1000, v = grades),
-                      value: round(r[k] / 1000, 1) + ' tūkst. mājokļu'
-                    }
-                  }));
-              });
-            });
-          });
-          return final;
-        })(), mapOptions);
-      }).catch((err) => {
-        console.log(err);
-      })
+    addStateButton('housing-novadi', 'majoklu_skaits_novados', {
+      label: 'mājokļu',
+      suffix: ' tūkst.',
+      grades: [1, 5, 10, 15, 30, 50, 100],
+      roundTo: 1,
+      getValue: (value) => {
+        return value / 1000
+      }
+    });
   });
 
   $('#dzimstiba-novadi').click(() => {
-    const grades = [6.5, 8, 9.5, 11, 12.5, 13, 14.5];
+    addStateButton('dzimstiba-novadi', 'dzimstiba_novados', {
+      label: 'dzimstība (uz 1000 iedz.)',
+      grades: [6.5, 8, 9.5, 11, 12.5, 13, 14.5]
+    });
+  });
 
-    getOpenData('dzimstiba_novados', 'error-alert-map')
-      .then((result) => {
-        $('#novadu-checkbox').prop('checked', true);
-
-        $('#map-dropdown .dropdown-item').removeClass('active');
-        $('#dzimstiba-novadi').addClass('active');
-
-        addInfo();
-        addLegend(grades, suffix = '');
-
-        map.removeLayer(geoJson);
-        geoJson = setMapData(map, (() => {
-          const final = [];
-          konturas.features.forEach((f) => {
-            result.forEach((r) => {
-              Object.keys(r).forEach((k) => {
-                if (k == f.properties.id)
-                  final.push(Object.assign({}, f, {
-                    properties: {
-                      name: f.properties.id,
-                      color: getColor(r[k], v = grades),
-                      value: r[k] + ' dzimstība (uz 1000 iedz.)'
-                    }
-                  }));
-              });
-            });
-          });
-          return final;
-        })(), mapOptions);
-      }).catch((err) => {
-        console.log(err);
-      })
+  $('#pilsoni-novadi').click(() => {
+    addStateButton('pilsoni-novadi', 'latviesu_pilsoni_novados', {
+      suffix: '%',
+      grades: [92, 93, 94, 95, 96, 97, 98]
+    });
   });
 });
 
 geoJson = setMapData(map, konturas, mapOptions);
-
-/*
-getOpenData('iedzivotaju_skaits_novados')
-  .then((result) => {
-    const populations = [];
-    const data = konturas.features.map((feature) => {
-      result.forEach((r) => {
-        Object.keys(r).forEach((k) => {
-          if (removeDiacritics(k) == feature.properties.id) {
-            d = r[k] / 150;
-            feature.properties.color =
-            d > 1000 ? '#800026' :
-            d > 500  ? '#BD0026' :
-            d > 200  ? '#E31A1C' :
-            d > 100  ? '#FC4E2A' :
-            d > 50   ? '#FD8D3C' :
-            d > 20   ? '#FEB24C' :
-            d > 10   ? '#FED976' :
-                       '#FFEDA0';
-          }
-        });
-      });
-      return feature;
-    });
-    setMapData(map, data, mapOptions);
-  });
-*/
