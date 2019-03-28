@@ -47,6 +47,11 @@ function setMapData(map, data, options) {
 						layer.bringToFront();
         },
         mouseout: (event) => {
+          if (typeof options.onMouseOut == undefined) {
+            // ... Defaults
+          } else {
+            options.onMouseOut(event, layer, feature);
+          }
           geoJson.resetStyle(layer);
         }
       });
@@ -55,7 +60,12 @@ function setMapData(map, data, options) {
   return geoJson;
 }
 
-function getOpenData(source) {
+function round(value, precision) {
+  var multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+}
+
+function getOpenData(source, eAlert = 'error-alert') {
   return new Promise((resolve, reject) => {
     $.ajax({
       url: config.host + '/chart/' + source,
@@ -65,7 +75,7 @@ function getOpenData(source) {
         resolve(result);
       },
       error: (err) => {
-        const alert = $('#error-alert');
+        const alert = $('#' + eAlert);
         alert.find('#message')
           .text(config.error.ajax);
         alert.show();

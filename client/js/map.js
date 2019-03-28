@@ -1,7 +1,11 @@
 const mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=';
 const map = getMap('region-map', [56.946285, 24.105078], 7, mapboxUrl);
 
-let geoJson, legend;
+let geoJson;
+let infoTitle = 'Bez Datiem';
+
+let info = L.control();
+let legend;
 
 // "Only the pureheart can witness his power."
 //   ~ Forggoten Namesake
@@ -82,7 +86,20 @@ const mapOptions = {
       weight: 4,
       fillOpacity: 1.0
     });
+    try {
+      info.update(feature.properties);
+    } catch(err) {}
+  },
+  onMouseOut: (event, layer, feature) => {
+    try {
+      info.update();
+    } catch(err) {}
   }
+}
+
+function removeInfo() {
+  if (info != null)
+    map.removeControl(info);
 }
 
 function removeLegend() {
@@ -90,11 +107,28 @@ function removeLegend() {
     map.removeControl(legend);
 }
 
+function addInfo() {
+  removeInfo();
+  info = L.control();
+  info.update = (props) => {
+    this._div.innerHTML = (props ? '<b>' + props.name + '</b><br>' + props.value : 'Uzliec kursoru virs novada, lai redzētu papildinformāciju.');
+  };
+  info.onAdd = (map) => {
+    this._div = L.DomUtil.create('div', 'info');
+    info.update();
+    return this._div;
+  };
+  info.addTo(map);
+}
+
 function addLegend(grades, suffix = '') {
   removeLegend();
-  legend = L.control({ position: 'bottomright' });
+  legend = L.control({
+    position: 'bottomright'
+  });
   legend.onAdd = (map) => {
     const div = L.DomUtil.create('div', 'info legend');
+    // div.innerHtml = `<i style="background: ${getColor(12312, v = grades)}"></i>`;
     for (let i = 0; i < grades.length; i++)
       div.innerHTML += `<i style="background: ${getColor(grades[i] + 1, v = grades)}"></i>
         ${grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + suffix + '<br>' : '+' + suffix)}`;
@@ -173,9 +207,11 @@ $('document').ready(() => {
     }
   });
 
-
   $('#default-novadi').click(() => {
+    removeInfo();
     removeLegend();
+
+    info = null;
     legend = null;
 
     $('#map-dropdown .dropdown-item').removeClass('active');
@@ -186,25 +222,103 @@ $('document').ready(() => {
   });
 
   $('#algas-novadi').click(() => {
-    $('#novadu-checkbox').attr('checked', true);
+    const grades = [550, 650, 750, 850, 950, 1050, 1150];
 
-    $('#map-dropdown .dropdown-item').removeClass('active');
-    $('#algas-novadi').addClass('active');
-
-    const grades = [400, 550, 700, 850, 1000, 1150, 1400];
-
-    addLegend(grades, suffix = '€');
-    getOpenData('alga_novados')
+    getOpenData('alga_novados', 'error-alert-map')
       .then((result) => {
+        $('#novadu-checkbox').prop('checked', true);
+
+        $('#map-dropdown .dropdown-item').removeClass('active');
+        $('#algas-novadi').addClass('active');
+
+        addInfo();
+        addLegend(grades, suffix = '€');
+
         map.removeLayer(geoJson);
         geoJson = setMapData(map, (() => {
           const final = [];
           konturas.features.forEach((f) => {
             result.forEach((r) => {
               Object.keys(r).forEach((k) => {
-                if (removeDiacritics(k) == f.properties.id)
+                if (k == f.properties.id)
                   final.push(Object.assign({}, f, {
                     properties: {
+                      name: f.properties.id,
+                      value: r[k] + '€',
+                      color: getColor(r[k], v = grades),
+                    }
+                  }));
+              });
+            });
+          });
+          return final;
+        })(), mapOptions);
+      }).catch((err) => {
+        console.log(err);
+      })
+  });
+
+  $('#population-novadi').click(() => {
+    const grades = [5, 10, 20, 50, 100, 250, 500];
+
+    getOpenData('iedzivotaju_skaits_novados', 'error-alert-map')
+      .then((result) => {
+        $('#novadu-checkbox').prop('checked', true);
+
+        $('#map-dropdown .dropdown-item').removeClass('active');
+        $('#population-novadi').addClass('active');
+
+        addInfo();
+        addLegend(grades, suffix = ' tūkst.');
+
+        map.removeLayer(geoJson);
+        geoJson = setMapData(map, (() => {
+          const final = [];
+          konturas.features.forEach((f) => {
+            result.forEach((r) => {
+              Object.keys(r).forEach((k) => {
+                if (k == f.properties.id)
+                  final.push(Object.assign({}, f, {
+                    properties: {
+                      name: f.properties.id,
+                      value: round(r[k] / 1000, 1) + ' tūkst. iedzīvotāji',
+                      color: getColor(r[k] / 1000, v = grades)
+                    }
+                  }));
+              });
+            });
+          });
+          return final;
+        })(), mapOptions);
+      }).catch((err) => {
+        console.log(err);
+      })
+  });
+
+  $('#noziegumi-novadi').click(() => {
+    const grades = [100, 200, 300, 400, 500, 600, 700];
+
+    getOpenData('noziedzigie_nodarijumi_novados', 'error-alert-map')
+      .then((result) => {
+        $('#novadu-checkbox').prop('checked', true);
+
+        $('#map-dropdown .dropdown-item').removeClass('active');
+        $('#noziegumi-novadi').addClass('active');
+
+        addInfo();
+        addLegend(grades, suffix = '');
+
+        map.removeLayer(geoJson);
+        geoJson = setMapData(map, (() => {
+          const final = [];
+          konturas.features.forEach((f) => {
+            result.forEach((r) => {
+              Object.keys(r).forEach((k) => {
+                if (k == f.properties.id)
+                  final.push(Object.assign({}, f, {
+                    properties: {
+                      name: f.properties.id,
+                      value: r[k] + ' noziegumi',
                       color: getColor(r[k], v = grades)
                     }
                   }));
@@ -218,26 +332,68 @@ $('document').ready(() => {
       })
   });
 
+  $('#housing-novadi').click(() => {
+    const grades = [1, 5, 10, 15, 30, 50, 100];
 
-  $('#population-novadi').click(() => {
-    $('#map-dropdown .dropdown-item').removeClass('active');
-    $('#population-novadi').addClass('active');
-
-    const grades = [5, 10, 20, 50, 100, 250, 500];
-
-    addLegend(grades, suffix = ' tūkst.');
-    getOpenData('iedzivotaju_skaits_novados')
+    getOpenData('majoklu_skaits_novados', 'error-alert-map')
       .then((result) => {
+        $('#novadu-checkbox').prop('checked', true);
+
+        $('#map-dropdown .dropdown-item').removeClass('active');
+        $('#housing-novadi').addClass('active');
+
+        addInfo();
+        addLegend(grades, suffix = ' tūkst.');
+
         map.removeLayer(geoJson);
         geoJson = setMapData(map, (() => {
           const final = [];
           konturas.features.forEach((f) => {
             result.forEach((r) => {
               Object.keys(r).forEach((k) => {
-                if (removeDiacritics(k) == f.properties.id)
+                if (k == f.properties.id)
                   final.push(Object.assign({}, f, {
                     properties: {
-                      color: getColor(r[k] / 1000, v = grades)
+                      name: f.properties.id,
+                      color: getColor(r[k] / 1000, v = grades),
+                      value: round(r[k] / 1000, 1) + ' tūkst. mājokļu'
+                    }
+                  }));
+              });
+            });
+          });
+          return final;
+        })(), mapOptions);
+      }).catch((err) => {
+        console.log(err);
+      })
+  });
+
+  $('#dzimstiba-novadi').click(() => {
+    const grades = [6.5, 8, 9.5, 11, 12.5, 13, 14.5];
+
+    getOpenData('dzimstiba_novados', 'error-alert-map')
+      .then((result) => {
+        $('#novadu-checkbox').prop('checked', true);
+
+        $('#map-dropdown .dropdown-item').removeClass('active');
+        $('#dzimstiba-novadi').addClass('active');
+
+        addInfo();
+        addLegend(grades, suffix = '');
+
+        map.removeLayer(geoJson);
+        geoJson = setMapData(map, (() => {
+          const final = [];
+          konturas.features.forEach((f) => {
+            result.forEach((r) => {
+              Object.keys(r).forEach((k) => {
+                if (k == f.properties.id)
+                  final.push(Object.assign({}, f, {
+                    properties: {
+                      name: f.properties.id,
+                      color: getColor(r[k], v = grades),
+                      value: r[k] + ' dzimstība (uz 1000 iedz.)'
                     }
                   }));
               });

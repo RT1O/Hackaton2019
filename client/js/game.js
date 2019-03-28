@@ -225,6 +225,9 @@ const mapOptions = {
         fillOpacity: 1.0
       });
     }
+  },
+  onMouseOut: (event, layer, feature) => {
+    // ...
   }
 };
 

@@ -45,16 +45,12 @@ const charts = [
       {
         label: 'Kaķi',
         col: 'Kaķi'
-      },
-      {
-        label: 'Seski',
-        col: 'Seski'
       }
     ],
     options: {
       title: {
         display: true,
-        text: 'Mājdzīvnieki Latvijā'
+        text: 'Mājdzīvnieki'
       }
     }
   }

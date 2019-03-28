@@ -16,16 +16,11 @@ function getNovadaData(id, data) {
   let answer = 0;
   data.forEach((d) => {
     Object.keys(d).forEach((k) => {
-      if (removeDiacritics(k) == id)
+      if (k == id)
         answer = d[k];
     });
   });
   return answer;
-}
-
-function round(value, precision) {
-  var multiplier = Math.pow(10, precision || 0);
-  return Math.round(value * multiplier) / multiplier;
 }
 
 const requiredStates = ['Riga'];
@@ -114,7 +109,7 @@ const questions = {
       }
     },
     {
-      msg: 'Cik daudz laulības tika slēgta šajā novadā 2017.gada beigās?',
+      msg: 'Cik daudz laulības tika slēgtas šajā novadā 2017.gada beigās?',
 	    source: 'slegtas_laulibas_novados',
       getAnswer (id, data) {
         return getNovadaData(id, data);
@@ -146,18 +141,19 @@ const questions = {
       }
     },
     {
-      msg: 'Cik iedzīvotāju bija šajā novadā 2018. gada beigās?',
-	    source: 'iedzivotaju_skaits_novados',
+      msg: 'Cik tūkst. iedzīvotāju bija šajā novadā 2018. gada beigās?',
+      source: 'iedzivotaju_skaits_novados',
+      suffix: ' tūkst.',
       getAnswer (id, data) {
-        return getNovadaData(id, data);
+        return round(getNovadaData(id, data) / 1000, 1);
       },
       getAnswers (id, data) {
         const answer = this.getAnswer(id, data);
         return [
-          answer,
-          parseInt(answer * randInt(110, 135) / 100),
-          parseInt(answer * randInt(50, 75) / 100),
-          parseInt(answer * randInt(75, 90) / 100)
+          answer + this.suffix,
+          round(answer * randInt(110, 135) / 100, 1) + this.suffix,
+          round(answer * randInt(50, 75) / 100, 1) + this.suffix,
+          round(answer * randInt(75, 90) / 100, 1) + this.suffix
         ];
       }
     }
