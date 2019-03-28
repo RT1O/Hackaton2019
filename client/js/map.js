@@ -1,11 +1,7 @@
 const mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=';
 const map = getMap('region-map', [56.946285, 24.105078], 7, mapboxUrl);
 
-let geoJson;
-let infoTitle = 'Bez Datiem';
-
-let info = L.control();
-let legend;
+let geoJson, info, legend;
 
 // "Only the pureheart can witness his power."
 //   ~ Forggoten Namesake
