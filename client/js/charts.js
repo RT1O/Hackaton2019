@@ -46,7 +46,8 @@ function renderChart(element, result, chart) {
           })
         });
       })
-    }
+    },
+    options: chart._options
   };
   const chartObject = new Chart(element, chartData);
 }

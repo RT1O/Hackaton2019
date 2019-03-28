@@ -12,6 +12,17 @@ const charts = [
     options: {
       fill: false,
       pointRadius: 2
+    },
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value / 1000000 + ' milj.';
+            }
+          }
+        }]
+      }
     }
   },
   {
@@ -32,7 +43,18 @@ const charts = [
         label: 'Mirstība Latvijā',
         col: 'Mirstība'
       }
-    ]
+    ],
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value / 1000 + ' tūkst.';
+            }
+          }
+        }]
+      }
+    }
   },
   {
     id: 'majdzivnieki-latvija',
@@ -47,10 +69,15 @@ const charts = [
         col: 'Kaķi'
       }
     ],
-    options: {
-      title: {
-        display: true,
-        text: 'Mājdzīvnieki'
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value / 1000 + ' tūkst.';
+            }
+          }
+        }]
       }
     }
   },
@@ -62,7 +89,18 @@ const charts = [
         label: 'Vieglie automobiļi',
         col: 'Vieglie automobiļi'
       }
-    ]
+    ],
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value / 1000000 + ' milj.';
+            }
+          }
+        }]
+      }
+    }
   },
   {
     id: 'smagais-transports',
@@ -72,7 +110,18 @@ const charts = [
         label: 'Kravas automobiļi (ieskaitot vilcējus)',
         col: 'Kravas automobiļi (ieskaitot vilcējus)'
       }
-    ]
+    ],
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value / 1000 + ' tūkst.';
+            }
+          }
+        }]
+      }
+    }
   },
   {
     id: 'autobusu-transports',
@@ -82,7 +131,18 @@ const charts = [
         label: 'Autobusi',
         col: 'Autobusi'
       }
-    ]
+    ],
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value / 1000 + ' tūkst.';
+            }
+          }
+        }]
+      }
+    }
   },
   {
     // type: 'line',
@@ -102,24 +162,117 @@ const charts = [
         col: 'pasažieru kuģi'
       }
     ],
-    amount: 15,
+    amount: 22,
+    _options: {
+      title: {
+        display: true,
+        text: 'Kuģi'
+      }
+    }
     /*options: {
       fill: false,
       pointRadius: 2
     }*/
   },
   {
-    type: 'line',
     id: 'dzelzscela-garums',
     source: 'celu_garums',
     data: [
       {
-        label: 'Valsts dzelzceļa līnijas, km',
+        label: 'Valsts dzelzceļa līnijas',
         col: 'Valsts dzelzceļa līnijas'
+      }
+    ],
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value + 'km';
+            }
+          }
+        }]
+      }
+    }
+  },
+  {
+    type: 'line',
+    id: 'minimala-alga',
+    source: 'minimala_alga_latvija',
+    data: [
+      {
+        label: 'Minimālā mēnešalga',
+        col: 'Minimālā mēnešalga'
+      }
+    ],
+    options: {
+      fill: false,
+      pointRadius: 2,
+    },
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value + '€';
+            }
+          }
+        }]
+      }
+    }
+  },
+  {
+    type: 'line',
+    id: 'bezdarbnieki',
+    source: 'bezdarbnieki_latvija',
+    data: [
+      {
+        label: 'Bezdarbnieki',
+        col: 'PAVISAM'
+      }
+    ],
+    options: {
+      fill: false,
+      pointRadius: 2,
+    },
+    _options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value) => {
+              return value + ' tūkst.';
+            }
+          }
+        }]
+      }
+    }
+  },
+  {
+    type: 'bar',
+    id: 'filmas',
+    source: 'filmu_razosana',
+    data: [
+      {
+        label: 'Spēlfilmas',
+        col: 'spēlfilmas'
+      },
+      {
+        label: 'Animācijas',
+        col: 'animācijas'
+      },
+      {
+        label: 'Dokumentālās',
+        col: 'dokumentālās'
       }
     ],
     options: {
       fill: false
+    },
+    _options: {
+      title: {
+        display: true,
+        text: 'Filmu ražošana'
+      }
     }
   }
 ];

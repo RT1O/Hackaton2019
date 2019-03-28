@@ -43,8 +43,8 @@ function setMapData(map, data, options) {
           } else {
             options.onMouseOver(event, layer, feature);
 					}
-					if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
-						layer.bringToFront();
+					//if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
+					//	layer.bringToFront();
         },
         mouseout: (event) => {
           if (typeof options.onMouseOut == undefined) {

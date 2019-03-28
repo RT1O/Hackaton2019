@@ -333,7 +333,14 @@ $('document').ready(() => {
   $('#dzimstiba-novadi').click(() => {
     addStateButton('dzimstiba-novadi', 'dzimstiba_novados', {
       label: 'dzimstība (uz 1000 iedz.)',
-      grades: [6.5, 8, 9.5, 11, 12.5, 13, 14.5]
+      grades: [6.5, 8, 9.5, 11, 12.5, 13, 14.5],
+      roundTo: 1
+    });
+  });
+
+  $('#laulibas-novadi').click(() => {
+    addStateButton('laulibas-novadi', 'slegtas_laulibas_novados', {
+      grades: [40, 60, 70, 90, 110, 130, 150]
     });
   });
 

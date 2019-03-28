@@ -2,6 +2,8 @@ $(window).bind("beforeunload", () => {
   return "Vai tu esi pārliecināts ka gribi iziet?";
 });
 
+const lines = false;
+
 const colors = [
   'rgb(200, 200, 200)',
   'rgb(117, 206, 135)',
@@ -11,13 +13,13 @@ const colors = [
 ];
 
 const lineColors = [
-  'rgb(0, 0, 100)', //Savieno vienu novadu ar potencialu novadu
-  'rgb(255, 255, 255)', //Savieno apmekletos novadus
+  'rgb(0, 0, 100)',
+  'rgba(60, 60, 60)',
 ];
 
-var CurrentN;
-var latlngs = Array();
-var Path = Array();
+var prevN = null;
+var latlngs = [];
+var path = [];
 
 const markers = [];
 const maxTurns = 15;
@@ -93,17 +95,18 @@ const game = {
   totalCorrect: 0,
   perfectTurns: 0,
   inARow: 0,
-  largestPointBonus: 0
+  largestPointBonus: 0,
+  distanceDone: 0,
+  totalDistance: 0
 };
 const awardedPoints = [100, 200, 300, 400];
-
 function getColor(properties) {
   if (properties.diff == 0)
     return colors[0];
   if (properties.completed)
-    return 'rgb(120, 120, 120)';
+    return 'rgb(170, 170, 170)';
   if (properties.startsOn < game.currentTurn)
-    return 'rgb(120, 120, 120)';
+    return 'rgb(170, 170, 170)';
   if (properties.startsOn == 0 || properties.startsOn > game.currentTurn)
     return colors[0];
   return colors[properties.diff % colors.length];
@@ -111,9 +114,13 @@ function getColor(properties) {
 
 const map = getMap('game-map', [56.946285, 24.105078], 7);
 
+map.on('baselayerchange',function(baselayer){
+  baselayer.layer.getLayers()[0].bringToBack();
+});
+
 map.on("overlayadd", function (event) {
-  for (i in Path) {
-    Path[i].bringToFront();
+  for (i in path) {
+    path[i].bringToFront();
   }
 })
 
@@ -127,18 +134,6 @@ const mapOptions = {
     };
   },
   onClick: (event, layer, feature) => {
-
-    if (feature.properties.diff > 0){
-      if(typeof CurrentN !== 'undefined'){
-        latlngs.push([CurrentN.properties.Latitude, CurrentN.properties.Longitude]);
-        latlngs.push([feature.properties.Latitude, feature.properties.Longitude]);
- 
-        Path.push(L.polyline(latlngs, {color: lineColors[1], dashArray: '20, 20', dashOffset: '0'}, ).addTo(map));
-      }
-      CurrentN = feature;
-    }
- 
-
     const properties = feature.properties;
     const diff = properties.diff;
 
@@ -149,9 +144,15 @@ const mapOptions = {
         if (f.properties.id == properties.id)
           mapData[i].properties.completed = true;
       });
+
       map.removeLayer(geoJson);
       geoJson = setMapData(map, mapData, mapOptions);
-      L.polyline(latlngs, {color: lineColors[1], dashArray: '20, 20', dashOffset: '0'}).addTo(map);
+
+      L.polyline(latlngs, {
+        color: lineColors[1],
+        dashArray: '1',
+        dashOffset: '0'
+      }).addTo(map);
     }
 
     function endQuestionTurn() {
@@ -159,6 +160,26 @@ const mapOptions = {
 
       game.currentTurn += 1;
       game.currentPoints = 0;
+
+      if (lines && prevN != null) {
+          latlngs.push([
+            prevN.properties.Latitude,
+            prevN.properties.Longitude
+          ]);
+
+          latlngs.push([
+            feature.properties.Latitude,
+            feature.properties.Longitude
+          ]);
+
+          path.push(L.polyline(latlngs, {
+            color: lineColors[1],
+            dashArray: '1',
+            dashOffset: '0'
+          }).addTo(map));
+      }
+
+      prevN = feature;
 
       $('#current-turn').text(game.currentTurn);
       $('#current-points').text(game.currentPoints);
@@ -194,9 +215,28 @@ const mapOptions = {
         .text(game.largestPointBonus);
       endModal.find('#perfect-turns')
         .text(game.perfectTurns);
+      endModal.find('#distance-done')
+        .text(round(game.totalDistance, 1));
     }
 
     function openQuestion(generatedQuestions, currentQuestion = 0) {
+      if (prevN != null) {
+        const prev = L.latLng(
+          parseFloat(prevN.properties.Latitude),
+          parseFloat(prevN.properties.Longitude));
+        const curr = L.latLng(
+          parseFloat(properties.Latitude),
+          parseFloat(properties.Longitude));
+
+        game.distanceDone   = round(prev.distanceTo(curr) / 1000, 1);
+        game.totalDistance += game.distanceDone;
+
+        const bonusPoints = round((200 - game.distanceDone) / 2);
+        game.totalPoints += bonusPoints < 0 ? 0 : bonusPoints;
+
+        $('#total-game-points').text(game.totalPoints);
+      }
+
       if (currentQuestion >= 2)
         $('#next').text('Pabeigt');
 
@@ -318,7 +358,7 @@ const mapOptions = {
       }
     }
 
-    if (properties.diff > 0 && !properties.completed) {
+    if (properties.diff > 0 && !properties.completed && properties.startsOn == game.currentTurn) {
       /*const infoModal = $('#info-modal').modal('show');
 
       infoModal.find('#label').text(properties.id);
@@ -346,18 +386,17 @@ const mapOptions = {
       }
 
       openQuestion(generateQuestions(0, 3));
-      // });
     }
   },
   onMouseOver: (event, layer, feature) => {
-    if (feature.properties.diff > 0 && !feature.properties.completed) {
+    if (feature.properties.diff > 0 && !feature.properties.completed && feature.properties.startsOn == game.currentTurn) {
       layer.setStyle({
         weight: 4,
         fillOpacity: 1.0
       });
     }
-    for (i in Path) {
-      Path[i].bringToFront();
+    for (i in path) {
+      path[i].bringToFront();
     }
   },
   onMouseOut: (event, layer, feature) => {
