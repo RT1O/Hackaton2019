@@ -90,7 +90,9 @@ function getColor(properties) {
     return colors[0];
   if (properties.completed)
     return 'rgb(120, 120, 120)';
-  if (properties.startsOn != game.currentTurn)
+  if (properties.startsOn < game.currentTurn)
+    return 'rgb(120, 120, 120)';
+  if (properties.startsOn == 0 || properties.startsOn > game.currentTurn)
     return colors[0];
   return colors[properties.diff % colors.length];
 }
@@ -285,11 +287,11 @@ const mapOptions = {
 
       $('#next').text('Nākamais');
 
-      function generateQuestions(diff, amt = 3) {
+      function generateQuestions(d, amt = 3) {
         const generated = [];
 
         while (generated.length < amt) {
-          const q = questions[diff][randInt(0, questions[diff].length)];
+          const q = questions[d][randInt(0, questions[d].length)];
           if (generated.includes(q))
             continue;
           generated.push(q);
@@ -298,7 +300,7 @@ const mapOptions = {
         return generated;
       }
 
-      openQuestion(generateQuestions(0, 3));
+      openQuestion(generateQuestions(properties.diff - 1, 3));
       // });
     }
   },
