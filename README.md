@@ -8,7 +8,7 @@
 
 ## How to run the server:
 
-```
+```bash
 cd server
 
 npm install
