@@ -1,11 +1,5 @@
 # Olimps 3D
 
-## Required:
-
-1. git
-
-2. Node.js
-
 ## How to run the server:
 
 ```bash
