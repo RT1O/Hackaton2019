@@ -1,5 +1,7 @@
 # Olimps 3D
 
+A project made for participation in https://lata.org.lv/skolas2019
+
 ## How to run the server:
 
 ```bash
