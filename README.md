@@ -1,12 +1,12 @@
-# Olimps 3D @ Latvijas Skolu Atvērto Datu Hakatons 2019
+# Olimps 3D
 
-## Nepieciešamais:
+## Required:
 
 1. git
 
 2. Node.js
 
-## Kā palaist serveri:
+## How to run the server:
 
 ```
 cd server
@@ -16,6 +16,10 @@ npm install
 npm run start
 ```
 
-## Kā palaist saiti:
+## How to run the site:
 
-Pārvietojaties uz `client` mapi un atveriet `index.html` failu.
+1. Navigate to the `client` folder.
+
+2. Specify the server host url in the `/data/config.js` folder.
+
+3. Open `index.html`.
